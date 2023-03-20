@@ -25,7 +25,7 @@
 
 /* QUICO CUSTOM DEFINES */
 
-#define SIZE 5000
+#define SIZE 4097
 #define THREADS_PER_BLOCK 256
 
 /**
