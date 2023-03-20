@@ -22,7 +22,6 @@
 // For the CUDA runtime routines (prefixed with "cuda_")
 #include <cuda_runtime.h>
 
-
 /* QUICO CUSTOM DEFINES */
 
 #define SIZE 4096
@@ -39,29 +38,38 @@ vectorAdd(const float *A, const float *B, float *C, int numElements)
 {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
 
-	int bdx	= blockDim.x;
-	int bix = blockIdx.x;
-	int tix = threadIdx.x;
+    int bdx = blockDim.x;
+    int bix = blockIdx.x;
+    int tix = threadIdx.x;
 
-	
     if (i < numElements)
     {
-//	printf("threadIdx.x=%d, i=%d\n",threadIdx.x,i);
+        //	printf("threadIdx.x=%d, i=%d\n",threadIdx.x,i);
         C[i] = A[i] + B[i];
     }
 }
 
+__global__ void
+vectorSubstract(const float *A, const float *B, float *C, int numElements)
+{
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
 
+    int bdx = blockDim.x;
+    int bix = blockIdx.x;
+    int tix = threadIdx.x;
 
-
-
+    if (i < numElements)
+    {
+        //	printf("threadIdx.x=%d, i=%d\n",threadIdx.x,i);
+        C[i] = A[i] - B[i];
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////
 /**
  * Host main routine
  */
-int
-main(void)
+int main(void)
 {
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
@@ -80,8 +88,11 @@ main(void)
     // Allocate the host output vector C
     float *h_C = (float *)malloc(size);
 
+    // Allocate the host output vector D
+    float *h_D = (float *)malloc(size);
+
     // Verify that allocations succeeded
-    if (h_A == NULL || h_B == NULL || h_C == NULL)
+    if (h_A == NULL || h_B == NULL || h_C == NULL || h_D == NULL)
     {
         fprintf(stderr, "Failed to allocate host vectors!\n");
         exit(EXIT_FAILURE);
@@ -90,8 +101,8 @@ main(void)
     // Initialize the host input vectors
     for (int i = 0; i < numElements; ++i)
     {
-        h_A[i] = rand()/(float)RAND_MAX;
-        h_B[i] = rand()/(float)RAND_MAX;
+        h_A[i] = rand() / (float)RAND_MAX;
+        h_B[i] = rand() / (float)RAND_MAX;
     }
 
     // Allocate the device input vector A
@@ -124,6 +135,16 @@ main(void)
         exit(EXIT_FAILURE);
     }
 
+    // Allocate the device output vector C
+    float *d_D = NULL;
+    err = cudaMalloc((void **)&d_D, size);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to allocate device vector D (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
     // Copy the host input vectors A and B in host memory to the device input vectors in
     // device memory
     printf("Copy input data from the host memory to the CUDA device\n");
@@ -145,7 +166,7 @@ main(void)
 
     // Launch the Vector Add CUDA Kernel
     int threadsPerBlock = THREADS_PER_BLOCK;
-    int blocksPerGrid =(numElements + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (numElements + threadsPerBlock - 1) / threadsPerBlock;
     printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
     vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, numElements);
     err = cudaGetLastError();
@@ -177,7 +198,40 @@ main(void)
         }
     }
 
-    printf("Test PASSED\n");
+    printf("Adittion Test PASSED\n");
+
+    printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
+    vectorSubstract<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_D, numElements);
+    err = cudaGetLastError();
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to launch vectorAdd kernel (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    // Copy the device result vector in device memory to the host result vector
+    // in host memory.
+    printf("Copy output data from the CUDA device to the host memory\n");
+    err = cudaMemcpy(h_D, d_D, size, cudaMemcpyDeviceToHost);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to copy vector C from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
+    // Verify that the result vector is correct
+    for (int i = 0; i < numElements; ++i)
+    {
+        if (fabs(h_A[i] - h_B[i] + h_D[i]) > 1e-5)
+        {
+            fprintf(stderr, "Result verification failed at element %d!\n", i);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    printf("Substraction Test PASSED\n");
 
     // Free device global memory
     err = cudaFree(d_A);
@@ -204,10 +258,19 @@ main(void)
         exit(EXIT_FAILURE);
     }
 
+    err = cudaFree(d_D);
+
+    if (err != cudaSuccess)
+    {
+        fprintf(stderr, "Failed to free device vector D (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+
     // Free host memory
     free(h_A);
     free(h_B);
     free(h_C);
+    free(h_D);
 
     // Reset the device and exit
     // cudaDeviceReset causes the driver to clean up all state. While
@@ -226,4 +289,3 @@ main(void)
     printf("Done\n");
     return 0;
 }
-
