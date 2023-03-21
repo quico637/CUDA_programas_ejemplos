@@ -30,7 +30,7 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
 
     for(unsigned int s = blockDim.x/2; s > 0; s >>= 1) {
         if (s % 2 != 0) {
-            atomicAdd(sdata[0], sdata[s])
+            atomicAdd(&sdata[0], sdata[s]);
         }
         __syncthreads();
     }
