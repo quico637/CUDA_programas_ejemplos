@@ -7,7 +7,7 @@ __constant__ int constante_d[CM_SIZE];
 
 __global__ void foo(int *gid_d)
 {
-     extern __shared__ int shared_mem[];
+    extern __shared__ int shared_mem[];
 
     int blockSize = blockDim.x * blockDim.y;
 

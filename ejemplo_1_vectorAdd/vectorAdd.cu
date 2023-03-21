@@ -135,7 +135,7 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    // Allocate the device output vector C
+    // Allocate the device output vector D
     float *d_D = NULL;
     err = cudaMalloc((void **)&d_D, size);
 

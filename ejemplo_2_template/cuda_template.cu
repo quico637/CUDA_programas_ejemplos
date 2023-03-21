@@ -65,10 +65,10 @@ int main(int argc, char **argv)
     //cutilChooseCudaDevice(argc, argv);
 
     // process command line arguments
-    tam_grid_x = getCmdLineArgumentInt(argc, (const char **) argv,  (const char *)"gsx")?:tam_grid_x;
-    tam_grid_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "gsy")?:tam_grid_y;
-    tam_block_x = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsx")?:tam_block_x;
-    tam_block_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsy")?:tam_block_y;
+    tam_grid_x = getCmdLineArgumentInt(argc, (const char **) argv,  (const char *)"gsx") ? : tam_grid_x;
+    tam_grid_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "gsy") ? : tam_grid_y;
+    tam_block_x = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsx") ? : tam_block_x;
+    tam_block_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsy") ? : tam_block_y;
 
 
     printf("\n\nDimension malla: tam_grid_x=%d tam_grid_y=%d \n", tam_grid_x,tam_grid_y);  
