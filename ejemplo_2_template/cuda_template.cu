@@ -32,6 +32,8 @@
 
 const int constante_h[CM_SIZE] = {1, 2, 3, 4, 5, 6, 7, 8};
 
+__constant__ int constante_d[CM_SIZE];
+
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +92,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemset((void *) gid_d, 0, nBytes));
 
     // initialize constant memory
-    checkCudaErrors(cudaMemcpyToSymbol(constante_d,constante_h, CM_SIZE*sizeof(int)));
+    checkCudaErrors(cudaMemcpy(constante_d,constante_h, CM_SIZE*sizeof(int)));
 
 
    //create events
