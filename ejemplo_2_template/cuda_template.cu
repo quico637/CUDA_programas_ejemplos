@@ -32,7 +32,7 @@
 
 const int constante_h[CM_SIZE] = {1, 2, 3, 4, 5, 6, 7, 8};
 
-extern __constant__ int constante_d[CM_SIZE];
+// extern __constant__ int constante_d[CM_SIZE];
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
