@@ -22,10 +22,15 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
      
     // perform reduction in shared memory
     for(unsigned int s = blockDim.x/2; s > 0; s >>= 1) {
-        if (tidb <= s) {
+        if (tidb < s) {
             sdata[tidb] += sdata[tidb + s];
         }
         __syncthreads();
+    }
+
+    if(blockDim.x % 2 != 0)
+    {
+        sdata[0] += sdata[blockDim.x - 1];
     }
                         
     // write result for this block to global memory
