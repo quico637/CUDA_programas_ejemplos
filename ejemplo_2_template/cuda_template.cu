@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     int tam_grid_y  = 2;
     int tam_block_x = 2;
     int tam_block_y = 2;
-    //int tam_block_z = 1;
+    int tam_block_z = 2;
 
     // General initialization call to pick the best CUDA Device
     // If the command-line has a device number specified, use it
@@ -65,17 +65,18 @@ int main(int argc, char **argv)
     //cutilChooseCudaDevice(argc, argv);
 
     // process command line arguments
-    tam_grid_x = getCmdLineArgumentInt(argc, (const char **) argv,  (const char *)"gsx")?:tam_grid_x;
-    tam_grid_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "gsy")?:tam_grid_y;
-    tam_block_x = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsx")?:tam_block_x;
-    tam_block_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsy")?:tam_block_y;
+    tam_grid_x = getCmdLineArgumentInt(argc, (const char **) argv,  (const char *)"gsx") ? : tam_grid_x;
+    tam_grid_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "gsy") ? : tam_grid_y;
+    tam_block_x = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsx") ? : tam_block_x;
+    tam_block_y = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsy") ? : tam_block_y;
+    tam_block_z = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsz") ? : tam_block_z;
 
 
     printf("\n\nDimension malla: tam_grid_x=%d tam_grid_y=%d \n", tam_grid_x,tam_grid_y);  
     printf("Dimension bloque: tam_block_x=%d tam_grid_y=%d\n\n",tam_block_x,tam_block_y);
 
 
-    nPos = tam_grid_x * tam_grid_y * tam_block_x * tam_block_y;
+    nPos = tam_grid_x * tam_grid_y * tam_block_x * tam_block_y * tam_block_z;
     nBytes = nPos * sizeof(int);
 
     // allocate host memory
@@ -104,7 +105,7 @@ int main(int argc, char **argv)
 
     // setup execution parameters
     dim3 grid(tam_grid_x, tam_grid_y);
-    dim3 block(tam_block_x, tam_block_y);
+    dim3 block(tam_block_x, tam_block_y, tam_block_z);
 
     // execute the kernel
     shared_mem_size = block.x * block.y * sizeof(int);

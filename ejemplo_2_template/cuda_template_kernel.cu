@@ -7,12 +7,12 @@ __constant__ int constante_d[CM_SIZE];
 
 __global__ void foo(int *gid_d)
 {
-     extern __shared__ int shared_mem[];
+    extern __shared__ int shared_mem[];
 
-    int blockSize = blockDim.x * blockDim.y;
+    int blockSize = blockDim.x * blockDim.y * blockDim.z;
 
     // global thread ID in thread block
-    int tidb = (threadIdx.y * blockDim.x + threadIdx.x);
+    int tidb = (threadIdx.y * blockDim.x * blockDim.z + threadIdx.z * blockDim.x + threadIdx.x );
 
     // global thread ID in grid
     int tidg = (blockIdx.y * gridDim.x * blockSize + blockIdx.x * blockSize + tidb);
