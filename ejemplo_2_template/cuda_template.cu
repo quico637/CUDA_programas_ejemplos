@@ -111,10 +111,10 @@ int main(int argc, char **argv)
     shared_mem_size = block.x * block.y * sizeof(int);
     assert(shared_mem_size <= SHM_SIZE);
     printf("Running configuration: \t %d threads\n\t\t\t grid of %d x %d\n"
-           "\t\t\t blocks of %d x %d threads (%d threads with %d bytes of shared memory per block)\n", 
+           "\t\t\t blocks of %d x %d x %dthreads (%d threads with %d bytes of shared memory per block)\n", 
            nPos,
            tam_grid_x, tam_grid_y, tam_block_x, tam_block_y,
-           tam_block_x * tam_block_y, shared_mem_size);
+           tam_block_x * tam_block_y * tam_block_z, shared_mem_size);
     
     foo<<<grid, block, shared_mem_size>>>(gid_d);
 
