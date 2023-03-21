@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     tam_block_z = getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsz") ? : tam_block_z;
 
 
-    printf("\n\nDimension malla: tam_grid_x=%d tam_grid_y=%d \n", tam_grid_x,tam_grid_y,);  
+    printf("\n\nDimension malla: tam_grid_x=%d tam_grid_y=%d \n", tam_grid_x,tam_grid_y);  
     printf("Dimension bloque: tam_block_x=%d tam_block_y=%d tam_block_z=%d \n\n",tam_block_x, tam_block_y, tam_block_z);
 
 
