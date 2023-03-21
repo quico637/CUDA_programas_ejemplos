@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemset((void *) gid_d, 0, nBytes));
 
     // initialize constant memory
-    checkCudaErrors(cudaMemcpy(constante_d,constante_h, CM_SIZE*sizeof(int)));
+    checkCudaErrors(cudaMemcpy(constante_d,constante_h, CM_SIZE*sizeof(int), cudaMemcpyHostToDevice));
 
 
    //create events
