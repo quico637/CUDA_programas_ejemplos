@@ -22,14 +22,16 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
      
     // perform reduction in shared memory
     for(unsigned int s = blockDim.x/2; s > 0; s >>= 1) {
+
+
         if (tidb < s) {
             sdata[tidb] += sdata[tidb + s];
         }
 
-        printf("s: %d\n", s);
         if(s % 2 != 0 && s > 1)
         {
-            atomicAdd(&sdata[0], sdata[s]);
+            if(tidb == 0)
+                atomicAdd(&sdata[0], sdata[s]);
         }
 
         __syncthreads();
