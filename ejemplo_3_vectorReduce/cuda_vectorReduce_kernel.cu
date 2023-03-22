@@ -27,10 +27,10 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
         }
 
         printf("s: %d\n", s);
-        // if(s % 2 != 0)
-        // {
-        //     atomicAdd(&sdata[0], sdata[s]);
-        // }
+        if(s % 2 != 0 && s > 1)
+        {
+            atomicAdd(&sdata[0], sdata[s]);
+        }
 
         __syncthreads();
     }
