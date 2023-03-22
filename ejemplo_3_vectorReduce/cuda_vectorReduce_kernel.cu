@@ -2,6 +2,16 @@
 // vectorReduce kernel
 ////////////////////////////////////////////////////////////////////////////////
 
+__device__ int find_geq_two_power(unsigned int n)
+{
+    unsigned int i = 0;
+    while(i < n)
+    {
+        i *= 2
+    }
+    return i;
+}
+
 __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
 {
     extern __shared__ int sdata[];
@@ -21,7 +31,10 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
     __syncthreads();
      
     // perform reduction in shared memory
-    for(unsigned int s = blockDim.x/2; s > 0; s >>= 1) {
+
+    unsigned int next_two_power = find_geq_two_power(blockIdx.x);
+
+    for(unsigned int s = next_two_power/2; s > 0; s = next_two_power(s << 1)) {
         if (tidb < s) {
             sdata[tidb] += sdata[tidb + s];
         }
