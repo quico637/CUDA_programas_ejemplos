@@ -19,6 +19,11 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
 
     __syncthreads();
 
+    if (blockDim.x % 2 != 0 && blockDim.x > 1 && tidb == 0)
+    {
+        atomicAdd(&sdata[0], sdata[blockDim.x - 1]);
+    }
+
     // perform reduction in shared memory
     for (unsigned int s = blockDim.x / 2; s > 0; s >>= 1)
     {
