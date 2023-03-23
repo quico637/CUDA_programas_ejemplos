@@ -60,8 +60,8 @@ int main(int argc, char **argv)
     cudaEvent_t start_event, stop_event;
 
     // process command line arguments
-    n = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"n") ?: n;
-    b = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"b") ?: b;
+    n = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"n") ? : n;
+    b = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"b") ? : b;
 
     nBytes = n * sizeof(float);
 
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
     for (int i = 0; i < n; i++)
     {
         vector_h[i] = (float)1.0;
-        wector_h[i] = (float)1.0;
+        wector_h[i] = (float)2.0;
     }
 
     // allocate device memory
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     // using events
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
-    vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, n);
+    // vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
