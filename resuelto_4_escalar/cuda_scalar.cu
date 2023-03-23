@@ -124,7 +124,7 @@ int main(int argc, char **argv)
     free(wector_h);
     free(scalar_h);
     checkCudaErrors(cudaFree((void *)vector_d));
-    checkCudaErrors(cudaFree((void *)wector_h));
+    checkCudaErrors(cudaFree((void *)wector_d));
     checkCudaErrors(cudaFree((void *)scalar_d));
 
     printf("\nTest PASSED\n");
