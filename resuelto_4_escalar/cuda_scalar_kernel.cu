@@ -10,8 +10,8 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
 
     
     if(tidg < n) {
-        shared[tidg] = vector_d[tidg] * wector_d[tidg];   
-        scalar_d[tidg] = shared[tidg];
+        scalar_d[tidg] = vector_d[tidg] * wector_d[tidg];   
+        // scalar_d[tidg] = shared[tidg];
     }
 
 
