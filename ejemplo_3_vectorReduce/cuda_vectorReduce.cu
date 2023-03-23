@@ -97,6 +97,8 @@ int main(int argc, char **argv)
     // wait for thread completion
     cudaThreadSynchronize();
 
+    printf("");
+
 
 
 
