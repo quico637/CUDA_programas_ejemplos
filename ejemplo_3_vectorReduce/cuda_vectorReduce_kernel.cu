@@ -48,6 +48,6 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
 
         // compute final stage
         for (int i = 1; i < gridDim.x; i++)
-            reduce_d[0] += reduce_d[i];
+            atomicAdd(&reduce_d[0], reduce_d[i]);
     }
 }
