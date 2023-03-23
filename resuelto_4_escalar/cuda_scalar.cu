@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
     // process command line arguments
     n = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"n") ?: n;
-    bsx = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"b") ?: b;
+    b = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"b") ?: b;
 
     nBytes = n * sizeof(float);
 
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     // using events
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
-    vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, scalar_d, n);
+    vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 
     // free memory
     free(vector_h);
-    free(reduce_h);
+    free(wector_h);
     free(scalar_h);
     checkCudaErrors(cudaFree((void *)vector_d));
     checkCudaErrors(cudaFree((void *)reduce_d));
