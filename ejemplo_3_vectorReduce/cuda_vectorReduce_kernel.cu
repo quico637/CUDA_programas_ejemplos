@@ -45,5 +45,9 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
     if (tidb == 0)
     {
         reduce_d[blockIdx.x] = sdata[0];
+
+        // compute final stage
+        for (int i = 1; i < gridDim.x; i++)
+            reduce_h[0] += reduce_h[i];
     }
 }

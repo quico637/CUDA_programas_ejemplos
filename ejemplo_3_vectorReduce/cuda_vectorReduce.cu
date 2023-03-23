@@ -108,11 +108,6 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, grid.x * sizeof(float), cudaMemcpyDeviceToHost));
 
 
-
-    //compute final stage
-    for(int i = 1; i < grid.x; i++)
-        reduce_h[0] += reduce_h[i];
-
     // check result
     assert(reduce_h[0] == (float) n);
 
