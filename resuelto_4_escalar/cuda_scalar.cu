@@ -66,8 +66,10 @@ int main(int argc, char **argv)
     nBytes = n * sizeof(float);
 
     // setup execution parameters
-    dim3 grid((n % b) ? (n / b) + 1 : (n / b));
+    // dim3 grid((n % b) ? (n / b) + 1 : (n / b));
+    dim3 grid((n + b - 1) / b);
     dim3 block(b);
+
 
     // allocate host memory
     vector_h = (float *)malloc(nBytes);
@@ -100,16 +102,17 @@ int main(int argc, char **argv)
     // using events
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
+    
     vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
 
     // ///*using event*/
-    // checkCudaErrors(cudaEventRecord(stop_event, 0));
-    // cudaEventSynchronize(stop_event); // block until the event is actually recorded
-    // checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
-    // printf("Processing time: %f (ms)", processing_time);
+    checkCudaErrors(cudaEventRecord(stop_event, 0));
+    cudaEventSynchronize(stop_event); // block until the event is actually recorded
+    checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
+    printf("Processing time: %f (ms)", processing_time);
 
     checkCudaErrors(cudaMemcpy(scalar_h, scalar_d, nBytes, cudaMemcpyDeviceToHost));
 
