@@ -18,11 +18,15 @@ __global__ void vectorScalarProduct(float *vector_d, float *wector_d, float *sca
 	//printf("blockIdx.x=%d threadIdx.x=%d \n",blockIdx.x,threadIdx.x);
 
     // load shared memory
+
     v_shared[tidb] = (tidg < n) ? vector_d[tidg] : 1.0;
     w_shared[tidb] = (tidg < n) ? wector_d[tidg] : 1.0;
-     
-    s_shared[tidg] = v_shared[tidg] * w_shared[tidg];
 
-    scalar_d[tidg] = s_shared[tidb];
+
+    if(tidg < n) {
+        s_shared[tidg] = v_shared[tidg] * w_shared[tidg];   
+        scalar_d[tidg] = s_shared[tidb];
+    }
+
 
 }
