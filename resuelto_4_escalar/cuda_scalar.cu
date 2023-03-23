@@ -106,7 +106,7 @@ int main(int argc, char **argv)
     cudaThreadSynchronize();
 
     // ///*using event*/
-    checkCudaErrors(cudaEventRecord(stop_event, 0));
+    // checkCudaErrors(cudaEventRecord(stop_event, 0));
     cudaEventSynchronize(stop_event); // block until the event is actually recorded
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
     printf("Processing time: %f (ms)", processing_time);
