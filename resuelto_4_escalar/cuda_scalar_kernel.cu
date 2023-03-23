@@ -4,24 +4,25 @@
 
 __global__ void vectorScalarProduct(float *vector_d, float *wector_d, float *scalar_d, int n)
 {
-    extern __shared__ int sdata[];
-
-    printf("legué");
+    extern __shared__ float v_shared[];
+    extern __shared__ float w_shared[];
+    extern __shared__ float s_shared[];
 
     // global thread ID in thread block
-    unsigned int tidb = threadIdx.x;
+    int tidb = threadIdx.x;
     
     // global thread ID in grid
-    unsigned int tidg = blockIdx.x * blockDim.x + threadIdx.x;
+    int tidg = blockIdx.x * blockDim.x + threadIdx.x;
 
 
 	//printf("blockIdx.x=%d threadIdx.x=%d \n",blockIdx.x,threadIdx.x);
 
     // load shared memory
-    sdata[tidb] = (tidg < n) ? vector_d[tidg]: 1.0;
+    v_shared[tidb] = (tidg < n) ? vector_d[tidg] : 1.0;
+    w_shared[tidb] = (tidg < n) ? wector_d[tidg] : 1.0;
      
-    sdata[tidg] = vector_d[tidg] * wector_d[tidg];
+    s_shared[tidg] = v_shared[tidg] * w_shared[tidg];
 
-    scalar_d[tidg] = sdata[tidb];    
+    scalar_d[tidg] = s_shared[tidb];
 
 }
