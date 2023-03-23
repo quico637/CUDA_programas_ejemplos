@@ -66,8 +66,8 @@ int main(int argc, char **argv)
     nBytes = n * sizeof(float);
 
     // setup execution parameters
-    dim3 grid((n % b) ? (n / b) + 1 : (n / bsx));
-    dim3 block(bsx);
+    dim3 grid((n % b) ? (n / b) + 1 : (n / b));
+    dim3 block(b);
 
     // allocate host memory
     vector_h = (float *)malloc(nBytes);
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
     free(wector_h);
     free(scalar_h);
     checkCudaErrors(cudaFree((void *)vector_d));
-    checkCudaErrors(cudaFree((void *)reduce_d));
+    checkCudaErrors(cudaFree((void *)wector_h));
     checkCudaErrors(cudaFree((void *)scalar_d));
 
     printf("\nTest PASSED\n");
