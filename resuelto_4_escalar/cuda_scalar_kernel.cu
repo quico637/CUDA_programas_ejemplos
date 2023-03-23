@@ -6,6 +6,8 @@ __global__ void vectorScalarProduct(float *vector_d, float *wector_d, float *sca
 {
     extern __shared__ int sdata[];
 
+    print("legué");
+
     // global thread ID in thread block
     unsigned int tidb = threadIdx.x;
     
