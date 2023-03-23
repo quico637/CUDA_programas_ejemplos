@@ -88,7 +88,7 @@ int main(int argc, char **argv)
     //using events
     checkCudaErrors(cudaEventRecord(start_event,0));
 
-#if __CUDA_ARCH__ < 600
+#if __CUDA_ARCH__ < 200
     printf("MOSCAS, ESTO NO CHUTA NENE");
 #endif
 
