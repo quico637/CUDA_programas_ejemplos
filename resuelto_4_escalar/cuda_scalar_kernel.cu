@@ -2,9 +2,8 @@
 // vectorScalar kernel
 ////////////////////////////////////////////////////////////////////////////////
 
-__global__ void vectorScalarProduct(float *vector_d, float *wector_d, float *scalar_d, int n)
+__global__ void vectorScalarProduct(const float *vector_d, const float *wector_d, const float *scalar_d, int n)
 {
-    extern __shared__ float shared[];
     
     // global thread ID in grid
     int tidg = blockIdx.x * blockDim.x + threadIdx.x;
