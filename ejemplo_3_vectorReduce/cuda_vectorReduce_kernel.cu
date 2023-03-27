@@ -33,6 +33,7 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
             sdata[tidb] += sdata[tidb + s];
         }
 
+        // hilo 0 varios bloques
         if (s % 2 != 0 && s > 1 && tidb == 0)
         {
             atomicAdd(&sdata[0], sdata[s - 1]);
@@ -45,12 +46,13 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
     if (tidb == 0)
     {
         reduce_d[blockIdx.x] = sdata[0];
+        atomicAdd(&reduce_d[0], sdata[0]);
     }
 
-    if (tidg == 0)
-    {
-        // compute final stage
-        for (int i = 1; i < gridDim.x; i++)
-            reduce_d[0] += reduce_d[i];
-    }
+    // if (tidg == 0)
+    // {
+    //     // compute final stage
+    //     for (int i = 1; i < gridDim.x; i++)
+    //         atomicAdd(&reduce_d[0], reduce_d[i]);
+    // }
 }
