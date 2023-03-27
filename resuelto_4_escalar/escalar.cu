@@ -44,7 +44,7 @@ void test(float *v, float *w, float *computed, int n)
 int main(int argc, char **argv)
 {
     float *vector_h, *wector_h, *scalar_h, *res_h; // host data
-    float *vector_d, *wector_d, *scalar_d; *res_d; // device data
+    float *vector_d, *wector_d, *scalar_d, *res_d; // device data
 
     size_t nBytes;
 
