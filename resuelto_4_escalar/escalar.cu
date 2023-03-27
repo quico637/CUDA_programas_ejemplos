@@ -119,7 +119,6 @@ int main(int argc, char **argv)
     // check result
     printf("nene: %.2f", *reduce_h);
     assert(*reduce_h == (float) 2 * n);
-    assert(*reduce_h - n <= 1e-10);
 
     // free memory
     free(vector_h);
