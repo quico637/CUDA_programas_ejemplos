@@ -43,7 +43,7 @@ void test(float *v, float *w, float *computed, int n)
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-    float *vector_h, *wector_h, *scalar_h; // host data
+    float *vector_h, *wector_h, *scalar_h, *res; // host data
     float *vector_d, *wector_d, *scalar_d; // device data
 
     size_t nBytes;
@@ -75,6 +75,7 @@ int main(int argc, char **argv)
     vector_h = (float *)malloc(nBytes);
     wector_h = (float *)malloc(nBytes);
     scalar_h = (float *)malloc(nBytes);
+    res = (float *)malloc(sizeof(float));
 
     for (int i = 0; i < n; i++)
     {
@@ -103,7 +104,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
     
-    vectorScalarProduct<<<grid, block>>>(vector_d, wector_d, scalar_d, n);
+    vectorScalarProduct<<<grid, block>>>(vector_d, wector_d, scalar_d, res, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
@@ -117,7 +118,9 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(scalar_h, scalar_d, nBytes, cudaMemcpyDeviceToHost));
 
     // check result
-    test(vector_h, wector_h, scalar_h, n);
+    // test(vector_h, wector_h, scalar_h, n);
+    assert(res == (float) 2 * n);
+
 
     // free memory
     free(vector_h);
