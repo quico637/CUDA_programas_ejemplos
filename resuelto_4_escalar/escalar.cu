@@ -118,8 +118,12 @@ int main(int argc, char **argv)
 
     // free memory
     free(vector_h);
+    free(wector_h);
+    free(scalar_h);
     free(reduce_h);
     checkCudaErrors(cudaFree((void *) vector_d));
+    checkCudaErrors(cudaFree((void *) wector_d));
+    checkCudaErrors(cudaFree((void *) scalar_d));
     checkCudaErrors(cudaFree((void *) reduce_d));
 
     printf("\nTest PASSED\n");
