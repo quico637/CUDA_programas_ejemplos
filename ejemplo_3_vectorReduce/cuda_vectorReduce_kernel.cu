@@ -46,7 +46,7 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
     if (tidb == 0)
     {
         // reduce_d[blockIdx.x] = sdata[0];
-        atomicAdd(&reduce_d, sdata[0]);
+        atomicAdd(reduce_d, sdata[0]);
     }
 
     // if (tidg == 0)
