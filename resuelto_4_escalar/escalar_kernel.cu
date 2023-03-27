@@ -74,13 +74,13 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
 
     // load shared memory
     // sdata[tidb] = (tidg < n) ? vector_d[tidg] : 0;
-    vector_d[tidb] = (tidg < n) ? vector_d[tidg] : 0;
+    scalar_d[tidb] = (tidg < n) ? scalar_d[tidg] : 0;
 
     __syncthreads();
 
     if (blockDim.x % 2 != 0 && blockDim.x > 1 && tidb == 0)
     {
-        atomicAdd(&vector_d[0], vector_d[blockDim.x - 1]);
+        atomicAdd(&scalar_d[0], scalar_d[blockDim.x - 1]);
     }
 
     // perform reduction in shared memory
@@ -89,13 +89,13 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
 
         if (tidb < s)
         {
-            vector_d[tidb] += vector_d[tidb + s];
+            scalar_d[tidb] += scalar_d[tidb + s];
         }
 
         // hilo 0 varios bloques
         if (s % 2 != 0 && s > 1 && tidb == 0)
         {
-            atomicAdd(&vector_d[0], vector_d[s - 1]);
+            atomicAdd(&scalar_d[0], scalar_d[s - 1]);
         }
 
         __syncthreads();
@@ -105,10 +105,10 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
     if (tidb == 0)
     {
         // reduce_d[blockIdx.x] = sdata[0];
-        atomicAdd(reduce_d, vector_d[0]);
+        atomicAdd(reduce_d, scalar_d[0]);
     }
 
     
-    vectorReduce(scalar_d, res, n);
+    // vectorReduce(scalar_d, res, n);
 
 }
