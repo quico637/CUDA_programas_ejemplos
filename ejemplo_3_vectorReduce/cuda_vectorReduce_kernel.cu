@@ -45,7 +45,6 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
     // write result for this block to global memory
     if (tidb == 0)
     {
-        reduce_d[blockIdx.x] = sdata[0];
         atomicAdd(&reduce_d[0], sdata[0]);
     }
 
