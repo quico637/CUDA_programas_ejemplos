@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-    float *vector_h, *reduce_h; // host data
-    float *vector_d, *reduce_d; // device data
+    float *vector_h, reduce_h; // host data
+    float *vector_d, reduce_d; // device data
     size_t nBytes;
 
     // default values
@@ -65,16 +65,16 @@ int main(int argc, char **argv)
     vector_h = (float *) malloc(nBytes);
     for(int i = 0; i < n; i++)
         vector_h[i] = (float) 1.0;
-    reduce_h = (float *) malloc(grid.x * sizeof(float));
+    reduce_h = (float *) malloc(sizeof(float));
     bzero(reduce_h, 1 * sizeof(float));
     
     // allocate device memory
     checkCudaErrors(cudaMalloc((void **) &vector_d, nBytes));
-    checkCudaErrors(cudaMalloc((void **) &reduce_d, grid.x * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &reduce_d, sizeof(float)));
 
     // copy data from host memory to device memory
     checkCudaErrors(cudaMemcpy(vector_d, vector_h, nBytes, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemset(reduce_d, 0, grid.x * sizeof(float)));
+    checkCudaErrors(cudaMemset(reduce_d, 0, sizeof(float)));
 
     // execute the kernel
     printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
@@ -105,11 +105,11 @@ int main(int argc, char **argv)
     printf("Processing time: %f (ms)", processing_time);       
 
 
-    checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, grid.x * sizeof(float), cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
 
 
     // check result
-    assert(reduce_h[0] == (float) n);
+    assert(reduce_h == (float) n);
 
     // free memory
     free(vector_h);
