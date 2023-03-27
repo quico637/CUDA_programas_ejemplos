@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
     
-    vectorScalarProduct<<<grid, block, block.x * sizeof(float) * 50>>>(vector_d, wector_d, scalar_d, res, n);
+    vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, res, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
