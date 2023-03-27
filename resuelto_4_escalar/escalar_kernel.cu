@@ -32,6 +32,7 @@ __global__ void vectorReduce(const float *vector_d, float *reduce_d, const float
     
     
     sdata[tidb] = (tidg < n) ? scalar_d[tidg] : 0;
+    // sdata[tidb] = (tidg < n) ? vector_d[tidg] * wector_d[tidg] : 0;
 
     __syncthreads();
 

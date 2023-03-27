@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event,0));
 
 
-    vectorReduce<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, wector_d, scalar_h, n);
+    vectorReduce<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, wector_d, scalar_d, n);
     
     // wait for thread completion
     cudaThreadSynchronize();
