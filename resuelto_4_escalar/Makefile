@@ -118,21 +118,21 @@ endif
 # Target rules
 all: build
 
-build: cuda_scalar
+build: escalar
  
 
-cuda_scalar.o: cuda_scalar.cu cuda_scalar_kernel.cu
+escalar.o: escalar.cu escalar_kernel.cu
 	$(NVCC) $(NVCCFLAGS)  $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
 
 
-cuda_scalar: cuda_scalar.o
+escalar: escalar.o
 	$(GCC) $(CCFLAGS) -o $@ $+ $(LDFLAGS) $(EXTRA_LDFLAGS)
 	mkdir -p ../../bin/$(OSLOWER)/$(TARGET)
 	cp $@ ../../bin/$(OSLOWER)/$(TARGET)
 
 
 run: build
-	./cuda_scalar
+	./escalar
 
 clean:
-	rm -f cuda_scalar *.o 
+	rm -f escalar *.o 
