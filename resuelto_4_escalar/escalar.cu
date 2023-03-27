@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------------------- */
-/* Project: I Curso de Computación Científica en Clusters                     */
-/* Author:  Juan Fernández Peinador                                           */
+/* Project: Ejercicio 4 Tarea 3.2 Programación Arquitecturas Multinúcleo 4GII */
+/* Author:  Francisco Arnaldo Boix Martinez                                   */
 /* Date:    Marzo de 2010                                                     */
-/* Actualizado en Febrero 2021 para cuda 8.0: cudaDeviceReset()		      */
+/* Actualizado en Febrero 2021 para cuda 8.0: cudaDeviceReset() 		      */
 /* -------------------------------------------------------------------------- */
 
 // includes, system
@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // includes, kernels
-#include "cuda_scalar_kernel.cu"
+#include "escalar_kernel.cu"
 
 void test(float *v, float *w, float *computed, int n)
 {
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 
     // check result
     // test(vector_h, wector_h, scalar_h, n);
-    assert(res == (float) 2 * n);
+    assert(*res == (float) 2 * n);
 
 
     // free memory
