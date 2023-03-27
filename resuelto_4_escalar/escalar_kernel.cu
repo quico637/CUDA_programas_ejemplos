@@ -2,6 +2,19 @@
 // vectorReduce kernel
 ////////////////////////////////////////////////////////////////////////////////
 
+__device__ void vectorScalarProduct(const float *vector_d, const float *wector_d, float *scalar_d, int n)
+{
+    unsigned int tidg = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (i < n)
+    {
+        scalar_d[i] = vector_d[i] + wector_d[i];
+    }
+
+}
+
+
+
 __global__ void vectorReduce(float *vector_d, float *reduce_d, const float *wector_d, float *scalar_d, int n)
 {
     extern __shared__ int sdata[];
@@ -15,7 +28,10 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, const float *wect
     // printf("blockIdx.x=%d threadIdx.x=%d \n",blockIdx.x,threadIdx.x);
 
     // load shared memory
-    sdata[tidb] = (tidg < n) ? vector_d[tidg] * wector_d[tidg] : 0;
+    vectorScalarProduct(vector_d, wector_d, scalar_d);
+    
+    
+    sdata[tidb] = (tidg < n) ? scalar_d[tidg] : 0;
 
     __syncthreads();
 
