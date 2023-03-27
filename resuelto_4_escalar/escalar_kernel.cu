@@ -61,7 +61,7 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
         // scalar_d[tidg] = shared[tidg];
     }
 
-    if(tidg == 0)
-        vectorReduce(scalar_d, res, n);
+    
+    vectorReduce(scalar_d, res, n);
 
 }
