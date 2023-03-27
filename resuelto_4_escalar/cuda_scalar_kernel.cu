@@ -2,7 +2,7 @@
 // vectorScalar kernel
 ////////////////////////////////////////////////////////////////////////////////
 
-__global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
+__device__ void vectorReduce(float *vector_d, float *reduce_d, int n)
 {
     extern __shared__ int sdata[];
 
@@ -61,7 +61,7 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
         // scalar_d[tidg] = shared[tidg];
     }
 
-
-    vectorReduce(scalar_d, res);
+    if(tidg == 0)
+        vectorReduce(scalar_d, res);
 
 }
