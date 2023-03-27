@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     for(int i = 0; i < n; i++)
     {
         vector_h[i] = (float) 1.0;
-        wector_h[i] = (float) 1.0;
+        wector_h[i] = (float) 2.0;
     }
     reduce_h = (float *) malloc(sizeof(float));
     bzero(reduce_h, 1 * sizeof(float));
@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
 
     // check result
-    assert(*reduce_h == (float) n);
+    assert(*reduce_h == (float) 2 * n);
 
     // free memory
     free(vector_h);
