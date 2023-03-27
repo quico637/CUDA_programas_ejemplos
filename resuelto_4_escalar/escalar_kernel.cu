@@ -8,7 +8,7 @@ __device__ void vectorScalarProduct(const float *vector_d, const float *wector_d
 
     if (tidg < n)
     {
-        scalar_d[tidg] = vector_d[tidg] + wector_d[tidg];
+        scalar_d[tidg] = vector_d[tidg] * wector_d[tidg];
     }
 
 }
