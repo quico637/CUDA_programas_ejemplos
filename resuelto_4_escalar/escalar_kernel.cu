@@ -2,7 +2,7 @@
 // vectorReduce kernel
 ////////////////////////////////////////////////////////////////////////////////
 
-__global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
+__global__ void vectorReduce(float *vector_d, float *reduce_d, const float *wector_d, float *scalar_d, int n)
 {
     extern __shared__ int sdata[];
 
@@ -21,7 +21,7 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, int n)
 	//printf("blockIdx.x=%d threadIdx.x=%d \n",blockIdx.x,threadIdx.x);
 
     // load shared memory
-    sdata[tidb] = (tidg < n) ? vector_d[tidg]: 0;
+    sdata[tidb] = (tidg < n) ? vector_d[tidg] * wector_d[tidg] : 0;
 
     __syncthreads();
      

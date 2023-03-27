@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-    float *vector_h, *reduce_h; // host data
-    float *vector_d, *reduce_d; // device data
+    float *vector_h, *wector_h, *scalar_d, *reduce_h; // host data
+    float *vector_d, *wector_h, *scalar_d, *reduce_d; // device data
     size_t nBytes;
 
     // default values
@@ -63,18 +63,24 @@ int main(int argc, char **argv)
 
     // allocate host memory
     vector_h = (float *) malloc(nBytes);
+    wector_h = (float *) malloc(nBytes);
+    scalar_h = (float *) malloc(nBytes);
+
     for(int i = 0; i < n; i++)
         vector_h[i] = (float) 1.0;
-    reduce_h = (float *) malloc(grid.x * sizeof(float));
+    reduce_h = (float *) malloc(sizeof(float));
     bzero(reduce_h, 1 * sizeof(float));
     
     // allocate device memory
     checkCudaErrors(cudaMalloc((void **) &vector_d, nBytes));
-    checkCudaErrors(cudaMalloc((void **) &reduce_d, grid.x * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &wector_d, nBytes));
+    checkCudaErrors(cudaMalloc((void **) &scalar_d, nBytes));
+    checkCudaErrors(cudaMalloc((void **) &reduce_d, sizeof(float)));
 
     // copy data from host memory to device memory
     checkCudaErrors(cudaMemcpy(vector_d, vector_h, nBytes, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemset(reduce_d, 0, grid.x * sizeof(float)));
+    checkCudaErrors(cudaMemcpy(wector_d, wector_h, nBytes, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemset(reduce_d, 0, sizeof(float)));
 
     // execute the kernel
     printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
@@ -89,7 +95,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event,0));
 
 
-    vectorReduce<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, n);
+    vectorReduce<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, wector_d, scalar_n, n);
     
     // wait for thread completion
     cudaThreadSynchronize();
