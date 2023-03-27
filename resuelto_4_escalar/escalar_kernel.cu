@@ -105,7 +105,7 @@ __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d
     if (tidb == 0)
     {
         // reduce_d[blockIdx.x] = sdata[0];
-        atomicAdd(reduce_d, scalar_d[0]);
+        atomicAdd(res, scalar_d[0]);
     }
 
     
