@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 
 
     // check result
-    assert(reduce_h == (float) n);
+    assert(*reduce_h == (float) n);
 
     // free memory
     free(vector_h);
