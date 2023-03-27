@@ -28,7 +28,7 @@ __global__ void vectorReduce(float *vector_d, float *reduce_d, const float *wect
     // printf("blockIdx.x=%d threadIdx.x=%d \n",blockIdx.x,threadIdx.x);
 
     // load shared memory
-    vectorScalarProduct(vector_d, wector_d, scalar_d, n);
+    vectorScalarProduct(vector_d, wector_d, scalar_d, n * blockDim.x);
     
     
     sdata[tidb] = (tidg < n) ? scalar_d[tidg] : 0;
