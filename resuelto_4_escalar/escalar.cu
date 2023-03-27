@@ -33,8 +33,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-    float *vector_h, *wector_h, *scalar_d, *reduce_h; // host data
-    float *vector_d, *wector_h, *scalar_d, *reduce_d; // device data
+    float *vector_h, *wector_h, *scalar_h, *reduce_h; // host data
+    float *vector_d, *wector_d, *scalar_d, *reduce_d; // device data
     size_t nBytes;
 
     // default values
