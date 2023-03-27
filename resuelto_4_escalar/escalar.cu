@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 
     // process command line arguments
     n=getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "n")?:n;
-    bsx=getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "bsx")?:bsx;
+    bsx=getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "b")?:bsx;
 
     nBytes = n * sizeof(float);
 
