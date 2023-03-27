@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     vector_h = (float *)malloc(nBytes);
     wector_h = (float *)malloc(nBytes);
     scalar_h = (float *)malloc(nBytes);
-    res = (float *)malloc(sizeof(float));
+    res_h = (float *)malloc(sizeof(float));
 
     for (int i = 0; i < n; i++)
     {
