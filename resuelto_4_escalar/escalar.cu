@@ -105,7 +105,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
     
-    vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, res_d, n);
+    vectorScalarProduct<<<grid, block, block.x * sizeof(float)>>>(vector_d, wector_d, scalar_d, res_h, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
@@ -116,11 +116,11 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
     printf("Processing time: %f (ms)", processing_time);
 
-    checkCudaErrors(cudaMemcpy(scalar_h, scalar_d, nBytes, cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(res_h, res_d, sizeof(float), cudaMemcpyDeviceToHost));
 
     // check result
     // test(vector_h, wector_h, scalar_h, n);
-    assert(*res == (float) 2 * n);
+    assert(*res_h == (float) 2 * n);
 
 
     // free memory
