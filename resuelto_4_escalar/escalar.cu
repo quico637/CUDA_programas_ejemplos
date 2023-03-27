@@ -67,7 +67,10 @@ int main(int argc, char **argv)
     scalar_h = (float *) malloc(nBytes);
 
     for(int i = 0; i < n; i++)
+    {
         vector_h[i] = (float) 1.0;
+        wector_h[i] = (float) 1.0;
+    }
     reduce_h = (float *) malloc(sizeof(float));
     bzero(reduce_h, 1 * sizeof(float));
     
