@@ -117,7 +117,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
 
     // check result
-    printf("nene: %f", *reduce_h)
+    printf("nene: %.2f", *reduce_h);
     assert(*reduce_h == (float) 2 * n);
 
     // free memory
