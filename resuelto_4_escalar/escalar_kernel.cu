@@ -6,10 +6,6 @@
 __global__ void vectorScalarProduct(const float *vector_d, const float *wector_d, float *scalar_d, float* res, int n)
 {
     
-
-
-    
-    
     extern __shared__ int sdata[];
 
     // global thread ID in thread block
