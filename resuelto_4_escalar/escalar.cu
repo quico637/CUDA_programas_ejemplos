@@ -111,7 +111,7 @@ int main(int argc, char **argv)
     printf("Processing time: %f (ms)", processing_time);       
 
 
-    checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, grid.x * sizeof(float), cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
 
 
 
