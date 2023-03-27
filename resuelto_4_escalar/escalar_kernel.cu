@@ -6,7 +6,7 @@ __device__ void vectorScalarProduct(const float *vector_d, const float *wector_d
 {
     unsigned int tidg = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (i < n)
+    if (tidg < n)
     {
         scalar_d[i] = vector_d[i] + wector_d[i];
     }
