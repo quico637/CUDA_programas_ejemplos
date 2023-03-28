@@ -122,12 +122,13 @@ int main(int argc, char **argv)
     // check result
     // assert(*reduce_h == (float) 2 * n);
 
-    float sum = 0;
+    float sum = 0.0;
     for(int i = 0; i < n; i++)
     {
         sum += vector_h[i] * wector_h[i];
     }
     printf("gpu: %lf cpu: %lf", *reduce_h, sum);
+    assert(*reduce_h - sum <= 1e-5);
 
     // free memory
     free(vector_h);
