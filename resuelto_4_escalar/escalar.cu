@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     cudaEventSynchronize(stop_dtoh);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&dtoh_time, start_dtoh, stop_dtoh));
 
-    printf("Device to host time: %d (ms)\n\n", dtoh_time);
+    printf("Device to host time: %lf (ms)\n\n", dtoh_time);
 
 
     // check result
