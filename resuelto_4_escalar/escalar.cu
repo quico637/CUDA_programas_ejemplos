@@ -148,7 +148,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_dtoh,0));
 
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
-
+    cudaEventSynchronize();
 
 
     checkCudaErrors(cudaEventRecord(stop_dtoh, 0));    
