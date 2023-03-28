@@ -106,6 +106,8 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(wector_d, wector_h, nBytes, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemset(reduce_d, 0, sizeof(float)));
 
+    cudaEventSynchronize();
+
     checkCudaErrors(cudaEventRecord(stop_htod, 0));    
     cudaEventSynchronize(stop_htod);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&htod_time, start_htod, stop_htod));      
