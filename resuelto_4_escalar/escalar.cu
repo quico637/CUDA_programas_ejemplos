@@ -29,14 +29,6 @@
 // includes, kernels
 #include "escalar_kernel.cu"
 
-void cpuescalar(float* a, float* b, float* c, int size, int threads){
-    float red = 0.0f;
-    #pragma omp parallel for num_threads(threads) reduction(+:red) schedule(static)
-    for(int i=0; i<size; i++)
-        red += a[i] * b[i];
-    c[0] = red;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +144,7 @@ int main(int argc, char **argv)
 
     // CPU
 
-    cpuescalar(vector_h, wector_h, scalar_h, n, 8);
+    cpuescalar()
 
 
 
