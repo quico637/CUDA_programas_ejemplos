@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     dim3 block(tam_block_x, tam_block_y, tam_block_z);
 
     // execute the kernel
-    shared_mem_size = block.x * block.y * sizeof(int);
+    shared_mem_size = block.x * block.y * block.y * sizeof(int);
     assert(shared_mem_size <= SHM_SIZE);
     printf("Running configuration: \t %d threads\n\t\t\t grid of %d x %d\n"
            "\t\t\t blocks of %d x %d x %dthreads (%d threads with %d bytes of shared memory per block)\n", 
