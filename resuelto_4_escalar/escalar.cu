@@ -111,7 +111,7 @@ int main(int argc, char **argv)
     cudaEventSynchronize(stop_htod);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&htod_time, start_htod, stop_htod));      
 
-    printf("Host to device time: %d (ms)\n\n", htod_time);
+    printf("Host to device time: %lf (ms)\n\n", htod_time);
 
 
     // execute the kernel
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(stop_event, 0));        
     cudaEventSynchronize(stop_event);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));        
-    printf("Processing time: %f (ms)", processing_time);       
+    printf("Processing time: %lf (ms)", processing_time);       
 
 
 
