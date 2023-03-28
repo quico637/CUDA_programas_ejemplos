@@ -113,7 +113,7 @@ int main(int argc, char **argv)
     float milliseconds = 0;
     cudaEventElapsedTime(&milliseconds, start_event, stop_event);
 
-    print("\n\n\nTime elapsed: %d miliseconds", milliseconds);
+    printf("\n\n\nTime elapsed: %d miliseconds", milliseconds);
 
 
  // ///*using event*/        
