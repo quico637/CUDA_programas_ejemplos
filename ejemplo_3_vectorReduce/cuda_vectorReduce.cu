@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(stop_event, 0));        
     cudaEventSynchronize(stop_event);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));        
-    printf("%d;%d;%f", n, bsx, processing_time);       
+    printf("%d;%d;%f\n", n, bsx, processing_time);       
 
 
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, grid.x * sizeof(float), cudaMemcpyDeviceToHost));
