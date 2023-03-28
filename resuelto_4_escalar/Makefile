@@ -122,7 +122,7 @@ build: escalar
  
 
 escalar.o: escalar.cu escalar_kernel.cu
-	$(NVCC) $(NVCCFLAGS)  $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
+	$(NVCC) $(NVCCFLAGS)  $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -fopenmp -Xcompiler -o $@ -c $<
 
 
 escalar: escalar.o

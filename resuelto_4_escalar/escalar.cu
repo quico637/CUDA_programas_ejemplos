@@ -11,6 +11,7 @@
 #include <string.h>
 #include <assert.h>
 
+
 // includes, project
  #include <cuda.h>
  #include <cuda_runtime.h>
@@ -27,6 +28,14 @@
 
 // includes, kernels
 #include "escalar_kernel.cu"
+
+void cpuescalar(float* a, float* b, float* c, int size, int threads){
+    float red = 0.0f;
+    #pragma omp parallel for num_threads(threads) reduction(+:red) schedule(static)
+    for(int i=0; i<size; i++)
+        red += a[i] * b[i];
+    c[0] = red;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -100,8 +109,17 @@ int main(int argc, char **argv)
     //using events
     checkCudaErrors(cudaEventRecord(start_event,0));
 
-
+    cudaEvent_t kini, kend; 
+    float tmem1;
+    cudaEventCreate(&kini); 
+    cudaEventCreate(&kend); 
+    cudaEventRecord(kini, 0); 
     vectorReduce<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, wector_d, scalar_d, n);
+    cudaEventRecord(kend, 0);
+
+    cudaEventSynchronize(kend);
+    cudaEventElapsedTime(&tmem1, kini, kend);
+
     
     // wait for thread completion
     cudaThreadSynchronize();
@@ -129,6 +147,14 @@ int main(int argc, char **argv)
     }
     printf("gpu: %lf cpu: %lf", *reduce_h, sum);
     assert(*reduce_h - sum <= 1e-5);
+
+
+
+    // CPU
+
+    cpuescalar(vector_h, wector_h, scalar_h, n, 8);
+
+
 
     // free memory
     free(vector_h);
