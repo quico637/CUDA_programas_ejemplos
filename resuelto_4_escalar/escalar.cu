@@ -106,7 +106,6 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(wector_d, wector_h, nBytes, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemset(reduce_d, 0, sizeof(float)));
 
-    cudaEventSynchronize();
 
     checkCudaErrors(cudaEventRecord(stop_htod, 0));    
     cudaEventSynchronize(stop_htod);   // block until the event is actually recorded        
@@ -150,7 +149,6 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_dtoh,0));
 
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
-    cudaEventSynchronize();
 
 
     checkCudaErrors(cudaEventRecord(stop_dtoh, 0));    
