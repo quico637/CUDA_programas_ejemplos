@@ -99,21 +99,11 @@ int main(int argc, char **argv)
     
     //using events
     checkCudaErrors(cudaEventRecord(start_event,0));
-
-    cudaEventRecord(start_event);
+    
     vectorReduce<<<grid, block, block.x * sizeof(float)>>>(vector_d, reduce_d, wector_d, scalar_d, n);
 
     // wait for thread completion
     cudaThreadSynchronize();
-
-    cudaEventRecord(stop_event);
-
-
-    cudaEventSynchronize(stop_event);
-    float milliseconds = 0;
-    cudaEventElapsedTime(&milliseconds, start_event, stop_event);
-
-    printf("\n\n\nTime elapsed: %d miliseconds", milliseconds);
 
 
  // ///*using event*/        
@@ -133,7 +123,7 @@ int main(int argc, char **argv)
     {
         sum += vector_h[i] * wector_h[i];
     }
-    printf("gpu: %lf cpu: %lf", *reduce_h, sum);
+    // printf("gpu: %lf cpu: %lf", *reduce_h, sum);
     assert(*reduce_h - sum <= 1e-3);
 
     // free memory
