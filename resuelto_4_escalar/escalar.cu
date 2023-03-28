@@ -50,6 +50,15 @@ int main(int argc, char **argv)
     float processing_time;
     cudaEvent_t start_event, stop_event;	
 
+    // htod events
+    float htod_time;
+    cudaEvent_t start_htod, stop_htod;	
+
+
+    // htod events
+    float dtoh_time;
+    cudaEvent_t start_dtoh, stop_dtoh;
+
 
     // process command line arguments
     n=getCmdLineArgumentInt(argc, (const char **) argv, (const char *) "n")?:n;
@@ -83,10 +92,26 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMalloc((void **) &scalar_d, nBytes));
     checkCudaErrors(cudaMalloc((void **) &reduce_d, sizeof(float)));
 
+
+
+    //create htod events
+    checkCudaErrors(cudaEventCreate(&start_htod,0));
+    checkCudaErrors(cudaEventCreate(&stop_htod,0));
+
+
+    checkCudaErrors(cudaEventRecord(start_htod,0));
+
     // copy data from host memory to device memory
     checkCudaErrors(cudaMemcpy(vector_d, vector_h, nBytes, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(wector_d, wector_h, nBytes, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemset(reduce_d, 0, sizeof(float)));
+
+    checkCudaErrors(cudaEventRecord(stop_htod, 0));    
+    cudaEventSynchronize(stop_htod);   // block until the event is actually recorded        
+    checkCudaErrors(cudaEventElapsedTime(&htod_time, start_htod, stop_htod));      
+
+    printf("Host to device time: %d (ms)\n\n", htod_time);
+
 
     // execute the kernel
     printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
@@ -107,9 +132,6 @@ int main(int argc, char **argv)
     cudaThreadSynchronize();
 
 
-
-
-
  // ///*using event*/        
     checkCudaErrors(cudaEventRecord(stop_event, 0));        
     cudaEventSynchronize(stop_event);   // block until the event is actually recorded        
@@ -117,7 +139,24 @@ int main(int argc, char **argv)
     printf("Processing time: %f (ms)", processing_time);       
 
 
+
+    //create htod events
+    checkCudaErrors(cudaEventCreate(&start_dtoh,0));
+    checkCudaErrors(cudaEventCreate(&stop_dtoh,0));
+
+
+    checkCudaErrors(cudaEventRecord(start_dtoh,0));
+
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
+
+
+
+    checkCudaErrors(cudaEventRecord(stop_dtoh, 0));    
+    cudaEventSynchronize(stop_htod);   // block until the event is actually recorded        
+    checkCudaErrors(cudaEventElapsedTime(&dtoh_time, start_dtoh, stop_dtoh));
+
+    printf("Device to host time: %d (ms)\n\n", dtoh_time);
+
 
     // check result
     // assert(*reduce_h == (float) 2 * n);
