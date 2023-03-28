@@ -76,9 +76,9 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(vector_d, vector_h, nBytes, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemset(reduce_d, 0, grid.x * sizeof(float)));
 
-    // execute the kernel
-    printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
-           grid.x, block.x, grid.x * block.x );
+    // // execute the kernel
+    // printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
+    //        grid.x, block.x, grid.x * block.x );
 
 
     //create events
