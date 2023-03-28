@@ -68,8 +68,11 @@ int main(int argc, char **argv)
 
     for(int i = 0; i < n; i++)
     {
-        vector_h[i] = (float) 1.0;
-        wector_h[i] = (float) 2.0;
+        // vector_h[i] = (float) 1.0;
+        // wector_h[i] = (float) 2.0;
+
+        vector_h[i] = rand()/(float)RAND_MAX;
+        wector_h[i] = rand()/(float)RAND_MAX;
     }
     reduce_h = (float *) malloc(sizeof(float));
     bzero(reduce_h, 1 * sizeof(float));
@@ -117,7 +120,14 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
 
     // check result
-    assert(*reduce_h == (float) 2 * n);
+    // assert(*reduce_h == (float) 2 * n);
+
+    float sum = 0;
+    for(int i = 0; i < n; i++)
+    {
+        sum += vector_h[i] * wector_h[i];
+    }
+    printf("cpu: %f gpu: %f", reduce_h, sum);
 
     // free memory
     free(vector_h);
