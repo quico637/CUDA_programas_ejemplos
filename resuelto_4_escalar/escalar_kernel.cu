@@ -34,7 +34,7 @@ __global__ void vectorReduce(const float *vector_d, float *reduce_d, const float
     sdata[tidb] = (tidg < n) ? scalar_d[tidg] : 0.0;
     // sdata[tidb] = (tidg < n) ? vector_d[tidg] * wector_d[tidg] : 0;
 
-    // __syncthreads();
+    __syncthreads();
 
     if (blockDim.x % 2 != 0 && blockDim.x > 1 && tidb == 0)
     {
@@ -56,7 +56,7 @@ __global__ void vectorReduce(const float *vector_d, float *reduce_d, const float
             atomicAdd(&sdata[0], sdata[s - 1]);
         }
 
-        // __syncthreads();
+        __syncthreads();
     }
 
     // write result for this block to global memory
