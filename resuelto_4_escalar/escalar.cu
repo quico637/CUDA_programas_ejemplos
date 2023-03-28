@@ -152,7 +152,7 @@ int main(int argc, char **argv)
 
 
     checkCudaErrors(cudaEventRecord(stop_dtoh, 0));    
-    cudaEventSynchronize(stop_htod);   // block until the event is actually recorded        
+    cudaEventSynchronize(stop_dtoh);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&dtoh_time, start_dtoh, stop_dtoh));
 
     printf("Device to host time: %d (ms)\n\n", dtoh_time);
