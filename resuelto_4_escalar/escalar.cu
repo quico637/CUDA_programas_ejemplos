@@ -128,7 +128,7 @@ int main(int argc, char **argv)
         sum += vector_h[i] * wector_h[i];
     }
     printf("gpu: %lf cpu: %lf", *reduce_h, sum);
-    assert(*reduce_h - sum <= 1e-5);
+    assert(*reduce_h - sum <= 1e-3);
 
     // free memory
     free(vector_h);

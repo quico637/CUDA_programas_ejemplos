@@ -13,8 +13,6 @@ __device__ void vectorScalarProduct(const float *vector_d, const float *wector_d
 
 }
 
-
-
 __global__ void vectorReduce(const float *vector_d, float *reduce_d, const float *wector_d, float *scalar_d, int n)
 {
     extern __shared__ float sdata[];
