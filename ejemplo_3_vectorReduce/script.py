@@ -18,4 +18,4 @@ os.system("echo \"Vector Length;Block Size;Time\" >> " + FILE)
 
 for i in DIM_VEC:
     for j in DIM_BLOCK:
-        os.system(COMPILED_FILE + " --n=" + i + " --bsx=" + j + " >> " + FILE)
+        os.system(COMPILED_FILE + " --n=" + str(i) + " --bsx=" + str(j) + " >> " + FILE)
