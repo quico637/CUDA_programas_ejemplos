@@ -181,6 +181,8 @@ int main(int argc, char **argv)
 
     printf("\nTest PASSED\n");
 
+
+
     //    cudaThreadExit();
 
     // Reset the device and exit
