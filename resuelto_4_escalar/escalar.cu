@@ -127,7 +127,7 @@ int main(int argc, char **argv)
     {
         sum += vector_h[i] * wector_h[i];
     }
-    printf("cpu: %f gpu: %f", reduce_h, sum);
+    printf("cpu: %f gpu: %f", *reduce_h, sum);
 
     // free memory
     free(vector_h);
