@@ -65,20 +65,20 @@ int main(int argc, char **argv)
     vector_h = (float *) malloc(nBytes);
     for(int i = 0; i < n; i++)
         vector_h[i] = (float) 1.0;
-    reduce_h = (float *) malloc(grid.x * sizeof(float));
+    reduce_h = (float *) malloc(sizeof(float));
     bzero(reduce_h, 1 * sizeof(float));
     
     // allocate device memory
     checkCudaErrors(cudaMalloc((void **) &vector_d, nBytes));
-    checkCudaErrors(cudaMalloc((void **) &reduce_d, grid.x * sizeof(float)));
+    checkCudaErrors(cudaMalloc((void **) &reduce_d, sizeof(float)));
 
     // copy data from host memory to device memory
     checkCudaErrors(cudaMemcpy(vector_d, vector_h, nBytes, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemset(reduce_d, 0, grid.x * sizeof(float)));
+    checkCudaErrors(cudaMemset(reduce_d, 0, sizeof(float)));
 
-    // // execute the kernel
-    // printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
-    //        grid.x, block.x, grid.x * block.x );
+    // execute the kernel
+    printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n", 
+           grid.x, block.x, grid.x * block.x );
 
 
     //create events
@@ -102,25 +102,22 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(stop_event, 0));        
     cudaEventSynchronize(stop_event);   // block until the event is actually recorded        
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));        
-    printf("%d;%d;%f\n", n, bsx, processing_time);       
+    printf("Processing time: %f (ms)", processing_time);       
 
 
-    checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, grid.x * sizeof(float), cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(reduce_h, reduce_d, sizeof(float), cudaMemcpyDeviceToHost));
 
-
-
-    //compute final stage
-    for(int i = 1; i < grid.x; i++)
-        reduce_h[0] += reduce_h[i];
 
     // check result
-    assert(reduce_h[0] == (float) n);
+    assert(*reduce_h == (float) n);
 
     // free memory
     free(vector_h);
     free(reduce_h);
     checkCudaErrors(cudaFree((void *) vector_d));
     checkCudaErrors(cudaFree((void *) reduce_d));
+
+    printf("\nTest PASSED\n");
 
     //    cudaThreadExit();
 
@@ -137,5 +134,9 @@ int main(int argc, char **argv)
         fprintf(stderr, "Failed to deinitialize the device! error=%s\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
+
+
+
+
 
 }
