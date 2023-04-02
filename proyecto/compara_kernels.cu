@@ -77,7 +77,7 @@ void test(float *A, float *B,  float *res, int m, int n, int w)
     printf("B: \n");
     print_matrix(B, w, n);
 
-    printf("CUDA: \n")
+    printf("CUDA: \n");
     print_matrix(res, m, n);
 
     printf("HOST SECUENTIAL");
