@@ -44,7 +44,7 @@ void test(float *A, float *B, float *res, int m, int n, int w)
             for (int k = 0; k < w; k++)
             {
                 C[i][j] += A[i][k] * B[k][j];
-                assert(C[i][j] == res[i * n + j])          
+                assert(C[i][j] == res[i * n + j]);
             }
         }
     }
