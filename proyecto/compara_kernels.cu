@@ -43,7 +43,7 @@ void test(float *A, float *B, float *res, int m, int n, int w)
             sum = 0.0f;
             for (int k = 0; k < w; k++)
             {
-                sum += A[i][k] * B[k][j];
+                sum += A[i * w + k] * B[k * n + j];
             }
             assert(sum == res[i * n + j]);
         }
