@@ -37,7 +37,7 @@ void print_matrix(float *m, int t1, int t2)
     for(int i = 0; i < t1; i++)
     {
         for(int j = 0; j < t2; j++)
-            printf("%f ", m[i * t2 + j])
+            printf("%f ", m[i * t2 + j]);
         printf("\n");
     }
 }
@@ -45,7 +45,7 @@ void print_matrix(float *m, int t1, int t2)
 
 float * multiply(float *A, float *B,  float *res, int m, int n, int w)
 {
-    float *C = malloc(m * n * sizeof(float));
+    float *C =(float*) malloc(m * n * sizeof(float));
 
     for (int i = 0; i < m; i++)
     {
@@ -72,16 +72,16 @@ void test(float *A, float *B,  float *res, int m, int n, int w)
     float *host = multiply(A, B, res, m, n, w);
 
     printf("A: \n");
-    print_matrix(A);
+    print_matrix(A, m, w);
 
     printf("B: \n");
-    print_matrix(B);
+    print_matrix(B, w, n);
 
     printf("CUDA: \n")
-    print_matrix(res);
+    print_matrix(res, m, n);
 
     printf("HOST SECUENTIAL");
-    print_matrix(host);
+    print_matrix(host, m, n);
 }
 
 int main(int argc, char **argv)
