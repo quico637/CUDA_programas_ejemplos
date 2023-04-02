@@ -57,7 +57,7 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
                 C[i * n + j] += A[i * w + k] * B[k * n + j];
             }
 
-            // assert(C[i * n + j] == res[i * n + j]);
+            assert(C[i * n + j] == res[i * n + j]);
             
         }
     }
@@ -71,6 +71,8 @@ void test(float *A, float *B,  float *res, int m, int n, int w)
 
     float *host = multiply(A, B, res, m, n, w);
 
+
+#ifdef DEBUG
     printf("A: \n");
     print_matrix(A, m, w);
 
@@ -82,6 +84,7 @@ void test(float *A, float *B,  float *res, int m, int n, int w)
 
     printf("HOST SECUENTIAL\n");
     print_matrix(host, m, n);
+#endif
 }
 
 int main(int argc, char **argv)
