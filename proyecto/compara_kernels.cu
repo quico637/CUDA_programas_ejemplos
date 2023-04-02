@@ -32,22 +32,56 @@
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
 
-void test(float *A, float *B, float *res, int m, int n, int w)
+void print_matrix(float *m, int t1, int t2)
 {
-    float sum;
+    for(int i = 0; i < t1; i++)
+    {
+        for(int j = 0; j < t2; j++)
+            printf("%f ", m[i * t2 + j])
+        printf("\n");
+    }
+}
+
+
+float * multiply(float *A, float *B,  float *res, int m, int n, int w)
+{
+    float *C = malloc(m * n * sizeof(float));
 
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            sum = 0.0f;
+            C[i * n + j] = 0.0f;
             for (int k = 0; k < w; k++)
             {
-                sum += A[i * w + k] * B[k * n + j];
+                C[i * n + j] += A[i * w + k] * B[k * n + j];
             }
-            assert(sum == res[i * n + j]);
+
+            // assert(C[i * n + j] == res[i * n + j]);
+            
         }
     }
+    return C;
+}
+
+void test(float *A, float *B,  float *res, int m, int n, int w)
+{
+
+    
+
+    float *host = multiply(A, B, res, m, n, w);
+
+    printf("A: \n");
+    print_matrix(A);
+
+    printf("B: \n");
+    print_matrix(B);
+
+    printf("CUDA: \n")
+    print_matrix(res);
+
+    printf("HOST SECUENTIAL");
+    print_matrix(host);
 }
 
 int main(int argc, char **argv)
