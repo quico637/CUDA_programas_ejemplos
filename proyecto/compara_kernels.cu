@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 
     // setup execution parameters
     dim3 grid(dim_mat / dim_block, dim_mat / dim_block);
-    dim3 block(dim_block * dim_block);
+    dim3 block(dim_block, dim_block);
 
     // allocate host memory
     h_A = (float *)malloc(nBytes_AB);
