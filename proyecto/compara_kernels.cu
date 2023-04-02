@@ -121,7 +121,7 @@ int main(int argc, char **argv)
     nBytes_C = size_C * sizeof(float);
 
     // setup execution parameters
-    dim3 grid(dim_mat / dim_block, dim_mat / dim_block);
+    dim3 grid(dim_mat, dim_mat);
     dim3 block(dim_block, dim_block);
 
     // allocate host memory
