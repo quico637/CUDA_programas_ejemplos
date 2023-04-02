@@ -34,16 +34,18 @@
 
 void test(float *A, float *B, float *res, int m, int n, int w)
 {
+    float sum;
 
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            C[i][j] = 0.0f;
+            sum = 0.0f;
             for (int k = 0; k < w; k++)
             {
-                assert(A[i][k] * B[k][j] == res[i * n + j]);
+                sum += A[i][k] * B[k][j];
             }
+            assert(sum == res[i * n + j])
         }
     }
 }
