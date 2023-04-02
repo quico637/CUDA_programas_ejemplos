@@ -80,7 +80,7 @@ void test(float *A, float *B,  float *res, int m, int n, int w)
     printf("CUDA: \n");
     print_matrix(res, m, n);
 
-    printf("HOST SECUENTIAL");
+    printf("HOST SECUENTIAL\n");
     print_matrix(host, m, n);
 }
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
     nBytes_C = size_C * sizeof(float);
 
     // setup execution parameters
-    dim3 grid((dim_mat % dim_block) ? (dim_mat / dim_block) + 1 : (dim_mat / dim_block));
+    dim3 grid((size_C % dim_block) ? (size_C / dim_block) + 1 : (size_C / dim_block));
     dim3 block(dim_block);
 
     // allocate host memory
@@ -168,6 +168,7 @@ int main(int argc, char **argv)
 
     default:
         printf("No kernel found for that index, please try with a number between [1,3]");
+        exit(1);
         break;
     }
 
@@ -178,7 +179,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(stop_event, 0));
     cudaEventSynchronize(stop_event); // block until the event is actually recorded
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
-    printf("Processing time: %f (ms)", processing_time);
+    printf("Processing time: %f (ms)\n", processing_time);
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, size_C, cudaMemcpyDeviceToHost));
 
