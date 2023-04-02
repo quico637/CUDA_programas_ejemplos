@@ -45,7 +45,7 @@ void test(float *A, float *B, float *res, int m, int n, int w)
             {
                 sum += A[i][k] * B[k][j];
             }
-            assert(sum == res[i * n + j])
+            assert(sum == res[i * n + j]);
         }
     }
 }
