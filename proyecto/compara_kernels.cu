@@ -188,7 +188,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
     printf("Processing time: %f (ms)\n", processing_time);
 
-    checkCudaErrors(cudaMemcpy(h_C, d_C, size_C, cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
 
 #ifdef TEST
     // check result
