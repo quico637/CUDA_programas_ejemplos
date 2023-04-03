@@ -165,7 +165,7 @@ int main(int argc, char **argv)
         break;
 
     case 2:
-        coalescedMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
+        coalescedMultiply<<<grid, block, dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
         break;
 
     case 3:
