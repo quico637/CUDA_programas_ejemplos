@@ -121,7 +121,7 @@ int main(int argc, char **argv)
     nBytes_C = size_C * sizeof(float);
 
     // setup execution parameters
-    dim3 grid(dim_mat / dim_block);
+    dim3 grid(dim_mat / dim_block, dim_mat / dim_block);
     dim3 block(dim_block, dim_block);
 
     // allocate host memory
@@ -146,8 +146,8 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
 
     // execute the kernel
-    printf("Running configuration: grid of %d blocks of %d threads (%d threads)\n",
-           grid.x, block.x, grid.x * block.x);
+    printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads)\n",
+           grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y);
 
     // create events
     checkCudaErrors(cudaEventCreate(&start_event, 0));
