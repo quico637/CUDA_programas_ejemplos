@@ -159,7 +159,8 @@ int main(int argc, char **argv)
     switch (kernel)
     {
     case 1:
-        simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
+        printf("dim_block: %d", dim_block);
+        simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block * dim_block);
         break;
 
     case 2:
