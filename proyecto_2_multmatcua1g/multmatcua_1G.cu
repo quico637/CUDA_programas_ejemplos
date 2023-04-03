@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // includes, kernels
-#include "compara_kernels_kernel.cu"
+#include "multmatcua_1G_kernel.cu"
 
 #define TEST
 // #define DEBUG
@@ -35,18 +35,17 @@
 
 void print_matrix(float *m, int t1, int t2)
 {
-    for(int i = 0; i < t1; i++)
+    for (int i = 0; i < t1; i++)
     {
-        for(int j = 0; j < t2; j++)
+        for (int j = 0; j < t2; j++)
             printf("%f ", m[i * t2 + j]);
         printf("\n");
     }
 }
 
-
-float * multiply(float *A, float *B,  float *res, int m, int n, int w)
+float *multiply(float *A, float *B, float *res, int m, int n, int w)
 {
-    float *C =(float*) malloc(m * n * sizeof(float));
+    float *C = (float *)malloc(m * n * sizeof(float));
 
     for (int i = 0; i < m; i++)
     {
@@ -60,19 +59,15 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
 
             // assert(C[i * n + j] == res[i * n + j]);
             assert(C[i * n + j] - res[i * n + j] <= 1e-3);
-            
         }
     }
     return C;
 }
 
-void test(float *A, float *B,  float *res, int m, int n, int w)
+void test(float *A, float *B, float *res, int m, int n, int w)
 {
 
-    
-
     float *host = multiply(A, B, res, m, n, w);
-
 
 #ifdef DEBUG
     printf("A: \n");
@@ -93,13 +88,12 @@ int main(int argc, char **argv)
 {
     float *h_A, *h_B, *h_C; // host data
     float *d_A, *d_B, *d_C; // device data
-    size_t size_AB, size_C;
-    size_t nBytes_AB, nBytes_C;
+    size_t size_ABC;
+    size_t nBytes_ABC;
 
     // default values
     int dim_mat = 1;   // n
     int dim_block = 1; // w
-    int kernel = 1;
 
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
@@ -111,40 +105,38 @@ int main(int argc, char **argv)
     // process command line arguments
     dim_mat = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"N") ?: dim_mat;
     dim_block = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"W") ?: dim_block;
-    kernel = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"K") ?: kernel;
 
     assert(dim_mat % dim_block == 0);
+    int t = dim_mat / dim_block;
 
-    size_AB = dim_mat * dim_block;
-    size_C = dim_mat * dim_mat;
+    size_ABC = dim_mat * dim_mat;
 
-    nBytes_AB = size_AB * sizeof(float);
     nBytes_C = size_C * sizeof(float);
 
     // setup execution parameters
-    dim3 grid(dim_mat / dim_block, dim_mat / dim_block);
+    dim3 grid(t, t);
     dim3 block(dim_block, dim_block);
 
     // allocate host memory
-    h_A = (float *)malloc(nBytes_AB);
-    h_B = (float *)malloc(nBytes_AB);
-    h_C = (float *)calloc(size_C, sizeof(float));
+    h_A = (float *)malloc(nBytes_ABC);
+    h_B = (float *)malloc(nBytes_ABC);
+    h_C = (float *)calloc(size_ABC, sizeof(float));
 
-    for (int i = 0; i < size_AB; i++)
+    for (int i = 0; i < size_ABC; i++)
     {
         h_A[i] = rand() / (float)RAND_MAX;
         h_B[i] = rand() / (float)RAND_MAX;
     }
 
     // allocate device memory
-    checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_AB));
-    checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_AB));
-    checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_C));
+    checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_ABC));
+    checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_ABC));
+    checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_ABC));
 
     // copy data from host memory to device memory
-    checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_AB, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_AB, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
+    checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_ABC, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_ABC, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemset(d_C, 0, nBytes_ABC));
 
     // execute the kernel
     printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - KERNEL: %d\n",
@@ -157,26 +149,7 @@ int main(int argc, char **argv)
     // using events
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
-    switch (kernel)
-    {
-    case 1:
-        // printf("dim_block: %d", dim_block);
-        simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
-        break;
-
-    case 2:
-        coalescedMultiply<<<grid, block, dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
-        break;
-
-    case 3:
-        sharedABMultiply<<<grid, block, 2 * dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
-        break;
-
-    default:
-        printf("No kernel found for that index, please try with a number between [1,3]");
-        exit(1);
-        break;
-    }
+    sharedABMultiply<<<grid, block, 2 * dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
 
     // wait for thread completion
     cudaThreadSynchronize();
@@ -191,7 +164,7 @@ int main(int argc, char **argv)
 
 #ifdef TEST
     // check result
-    test(h_A, h_B, h_C, dim_mat, dim_mat, dim_block);
+    test(h_A, h_B, h_C, dim_mat, dim_mat, dim_mat);
 #endif
     // free memory
     free(h_A);
