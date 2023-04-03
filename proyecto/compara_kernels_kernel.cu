@@ -42,7 +42,7 @@ repetidamente (w veces) */
 
 __global__ void sharedABMultiply(float *a, float *b, float *c, int N, const int tile_dim)
 {
-    extern __shared__ float aTile[],
+    extern __shared__ float aTile[];
 
     float *bTile = aTile + (tile_dim * tile_dim);
     int row = blockIdx.y * blockDim.y + threadIdx.y;
