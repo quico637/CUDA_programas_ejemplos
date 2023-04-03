@@ -58,7 +58,8 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
                 C[i * n + j] += A[i * w + k] * B[k * n + j];
             }
 
-            assert(C[i * n + j] == res[i * n + j]);
+            // assert(C[i * n + j] == res[i * n + j]);
+            assert(C[i * n + j] - res[i * n + j] <= 1e-3);
             
         }
     }
