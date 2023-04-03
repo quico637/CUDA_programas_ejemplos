@@ -165,8 +165,7 @@ int main(int argc, char **argv)
         break;
 
     case 2:
-        printf("case 2");
-        // simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
+        coalescedMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
         break;
 
     case 3:
