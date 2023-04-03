@@ -170,7 +170,7 @@ int main(int argc, char **argv)
 
     case 3:
         printf("case 3");
-        sharedABMultiply<<<grid, block, dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
+        sharedABMultiply<<<grid, block, 2 * dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
         break;
 
     default:

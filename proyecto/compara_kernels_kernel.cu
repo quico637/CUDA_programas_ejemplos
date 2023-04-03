@@ -42,21 +42,21 @@ repetidamente (w veces) */
 
 __global__ void sharedABMultiply(float *a, float *b, float *c, int N, const int tile_dim)
 {
-    __shared__ float aTile[],
+    extern __shared__ float aTile[],
 
-    bTile[tile_dim][tile_dim];
+    float *bTile = aTile + (tile_dim * tile_dim);
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     float sum = 0.0f;
 
     aTile[threadIdx.y * tile_dim + threadIdx.x] = a[row * tile_dim + threadIdx.x];
-    bTile[threadIdx.y][threadIdx.x] = b[threadIdx.y * N + col];
+    bTile[threadIdx.y * tile_dim + threadIdx.x] = b[threadIdx.y * N + col];
 
     __syncthreads(); // warp usa datos de B leídos por otro warp
 
     for (int i = 0; i < tile_dim; i++)
     {
-        sum += aTile[threadIdx.y * tile_dim + i] * bTile[i][threadIdx.x];
+        sum += aTile[threadIdx.y * tile_dim + i] * bTile[i * tile_dim + threadIdx.x];
     }
     c[row * N + col] = sum;
 }
