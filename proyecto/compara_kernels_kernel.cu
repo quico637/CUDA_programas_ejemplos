@@ -21,17 +21,17 @@ forma completamente coalesced, sin desaprovechar ancho de banda */
 
 __global__ void coalescedMultiply(float *a, float *b, float *c, int N, const int tile_dim)
 {
-    extern __shared__ float aTile[][];
+    extern __shared__ float aTile[];
 
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     float sum = 0.0f;
-    aTile[threadIdx.y][threadIdx.x] = a[row * tile_dim + threadIdx.x];
+    aTile[threadIdx.y * tile_dim + threadIdx.x] = a[row * tile_dim + threadIdx.x];
 
     for (int i = 0; i < tile_dim; i++)
     {
-        sum += aTile[threadIdx.y][i] * b[i * N + col];
+        sum += aTile[threadIdx.y * tile_dim + i] * b[i * N + col];
     }
 
     c[row * N + col] = sum;
