@@ -4,7 +4,7 @@
 /* Cada thread calcula el elemento (row,col) de C recorriendo la fila row de A y la
 columna col de B*/
 
-__global__ void simpleMultiply(float *a, float *b, float *c, int N, int tile_dim)
+__global__ void simpleMultiply(float *a, float *b, float *c, int N, const int tile_dim)
 {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
@@ -19,10 +19,10 @@ __global__ void simpleMultiply(float *a, float *b, float *c, int N, int tile_dim
 /* Cada elemento del tile de A se lee de memoria global a memoria compartida solamente una vez, en
 forma completamente coalesced, sin desaprovechar ancho de banda */
 
-__global__ void coalescedMultiply(float *a, float *b, float *c, int N, int tile_dim)
+__global__ void coalescedMultiply(float *a, float *b, float *c, int N, const int tile_dim)
 {
     __shared__ float aTile[tile_dim][tile_dim];
-    
+
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
