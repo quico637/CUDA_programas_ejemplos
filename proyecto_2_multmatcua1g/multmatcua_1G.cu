@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 
     size_ABC = dim_mat * dim_mat;
 
-    nBytes_C = size_C * sizeof(float);
+    nBytes_ABC = size_ABC * sizeof(float);
 
     // setup execution parameters
     dim3 grid(t, t);
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
     printf("Processing time: %f (ms)\n", processing_time);
 
-    checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_ABC, cudaMemcpyDeviceToHost));
 
 #ifdef TEST
     // check result
