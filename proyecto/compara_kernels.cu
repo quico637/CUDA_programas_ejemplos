@@ -121,7 +121,7 @@ int main(int argc, char **argv)
     nBytes_C = size_C * sizeof(float);
 
     // setup execution parameters
-    dim3 grid(dim_mat / dim_block, dim_mat / dim_block);
+    dim3 grid(dim_mat / dim_block);
     dim3 block(dim_block, dim_block);
 
     // allocate host memory
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     {
     case 1:
         // printf("dim_block: %d", dim_block);
-        simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block * dim_block);
+        simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
         break;
 
     case 2:
