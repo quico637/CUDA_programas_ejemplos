@@ -22,7 +22,7 @@ forma completamente coalesced, sin desaprovechar ancho de banda */
 __global__ void coalescedMultiply(float *a, float *b, float *c, int N, int tile_dim)
 {
     __shared__ float aTile[tile_dim][tile_dim];
-    __shared__ float aTile[tile_dim][tile_dim];
+    
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
 
