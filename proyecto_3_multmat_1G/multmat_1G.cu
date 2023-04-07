@@ -146,7 +146,7 @@ int main(int argc, char **argv)
         h_A[i] = rand() / (float)RAND_MAX;
     }
 
-    for (int i = 0; i < size_A; i++)
+    for (int i = 0; i < size_B; i++)
     {
         h_B[i] = rand() / (float)RAND_MAX;
     }
