@@ -93,13 +93,12 @@ int main(int argc, char **argv)
 {
     float *h_A, *h_B, *h_C; // host data
     float *d_A, *d_B, *d_C; // device data
-    size_t size_AB, size_C;
-    size_t nBytes_AB, nBytes_C;
+    size_t size;
+    size_t nBytes;
 
     // default values
     int dim_mat = 1;   // n
     int dim_block = 1; // w
-    int kernel = 1;
 
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
@@ -114,20 +113,19 @@ int main(int argc, char **argv)
 
     assert(dim_mat % dim_block == 0);
 
-    size_AB = dim_mat * dim_mat;
-    size_C = dim_mat * dim_mat;
+    size = dim_mat * dim_mat;
 
-    nBytes_AB = size_AB * sizeof(float);
-    nBytes_C = size_C * sizeof(float);
+    nBytes = size * sizeof(float);
+    int t = dim_mat / dim_block;
 
     // setup execution parameters
-    dim3 grid(dim_mat / dim_block, dim_mat / dim_block);
+    dim3 grid(t, t);
     dim3 block(dim_block, dim_block);
 
     // allocate host memory
-    h_A = (float *)malloc(nBytes_AB);
-    h_B = (float *)malloc(nBytes_AB);
-    h_C = (float *)calloc(size_C, sizeof(float));
+    h_A = (float *)malloc(nBytes);
+    h_B = (float *)malloc(nBytes);
+    h_C = (float *)calloc(size, sizeof(float));
 
     for (int i = 0; i < size_AB; i++)
     {
@@ -136,14 +134,14 @@ int main(int argc, char **argv)
     }
 
     // allocate device memory
-    checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_AB));
-    checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_AB));
-    checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_C));
+    checkCudaErrors(cudaMalloc((void **)&d_A, nBytes));
+    checkCudaErrors(cudaMalloc((void **)&d_B, nBytes));
+    checkCudaErrors(cudaMalloc((void **)&d_C, nBytes));
 
     // copy data from host memory to device memory
-    checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_AB, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_AB, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
+    checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemset(d_C, 0, nBytes));
 
     // execute the kernel
     printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - KERNEL: %d\n",
@@ -168,7 +166,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
     printf("Processing time: %f (ms)\n", processing_time);
 
-    checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes, cudaMemcpyDeviceToHost));
 
 #ifdef TEST
     // check result
