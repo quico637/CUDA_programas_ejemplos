@@ -127,7 +127,7 @@ int main(int argc, char **argv)
     h_B = (float *)malloc(nBytes);
     h_C = (float *)calloc(size, sizeof(float));
 
-    for (int i = 0; i < size_AB; i++)
+    for (int i = 0; i < size; i++)
     {
         h_A[i] = rand() / (float)RAND_MAX;
         h_B[i] = rand() / (float)RAND_MAX;
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
 
     // execute the kernel
     printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - KERNEL: %d\n",
-           grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y, kernel);
+           grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y);
 
     // create events
     checkCudaErrors(cudaEventCreate(&start_event, 0));
