@@ -27,7 +27,7 @@
 #include "multmat_1G_kernel.cu"
 
 #define TEST
-// #define DEBUG
+#define DEBUG
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
 
     // execute the kernel
-    printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - KERNEL: %d\n",
+    printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads)\n",
            grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y);
 
     // create events
