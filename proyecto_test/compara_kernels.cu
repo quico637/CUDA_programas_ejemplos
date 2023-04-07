@@ -111,7 +111,6 @@ int main(int argc, char **argv)
     // process command line arguments
     dim_mat = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"N") ?: dim_mat;
     dim_block = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"W") ?: dim_block;
-    kernel = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"K") ?: kernel;
 
     assert(dim_mat % dim_block == 0);
 
@@ -157,26 +156,8 @@ int main(int argc, char **argv)
     // using events
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
-    switch (kernel)
-    {
-    case 1:
-        // printf("dim_block: %d", dim_block);
-        simpleMultiply<<<grid, block>>>(d_A, d_B, d_C, dim_mat, dim_block);
-        break;
 
-    case 2:
-        coalescedMultiply<<<grid, block, dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
-        break;
-
-    case 3:
-        sharedABMultiply<<<grid, block, 2 * dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
-        break;
-
-    default:
-        printf("No kernel found for that index, please try with a number between [1,3]");
-        exit(1);
-        break;
-    }
+    sharedABMultiply<<<grid, block, 2 * dim_block * dim_block * sizeof(float)>>>(d_A, d_B, d_C, dim_mat, dim_block);
 
     // wait for thread completion
     cudaThreadSynchronize();
