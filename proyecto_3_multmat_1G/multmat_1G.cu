@@ -103,7 +103,6 @@ int main(int argc, char **argv)
     int n = 1;   // n
     int k = 1;
     int w = 1;
-    int filas_cpu = 1;
 
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
@@ -117,7 +116,6 @@ int main(int argc, char **argv)
     n = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"N") ?: n;
     k = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"K") ?: k;
     w = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"W") ?: w;
-    filas_cpu = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"W") ?: filas_cpu;
 
     assert(m % w == 0);
     assert(n % w == 0);
@@ -134,7 +132,6 @@ int main(int argc, char **argv)
 
     int s = m / w;
     int t = n / w;
-    // int r = k / w ;
 
     // setup execution parameters
     dim3 grid(s, t);
@@ -177,7 +174,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
 
-    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, n, w);
+    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w);
 
     // wait for thread completion
     cudaThreadSynchronize();
