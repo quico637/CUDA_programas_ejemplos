@@ -2,7 +2,7 @@
 /* Project: I Curso de Computación Científica en Clusters                     */
 /* Author:  Juan Fernández Peinador                                           */
 /* Date:    Marzo de 2010                                                     */
-/* Actualizado en Febrero 2021 para cuda 8.0: cudaDeviceReset()		      */
+/* Actualizado en Febrero 2021 para cuda 8.0: cudaDeviceReset()		          */
 /* -------------------------------------------------------------------------- */
 
 // includes, system
