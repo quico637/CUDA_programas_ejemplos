@@ -1,7 +1,7 @@
 /* Para calcular cada fila del tile de C se lee el tile entero de B. Por tanto, para el tile entero de C (el trabajo que hace un bloque de threads) se lee el tile entero de B
 repetidamente (w veces) */
 
-__global__ void sharedABMultiply(float *a, float *b, float *c, const int N, const int M, const int K, const int tile_dim)
+__global__ void sharedABMultiply(float *a, float *b, float *c, const int M, const int N, const int K, const int tile_dim)
 {
     extern __shared__ float aTile[];
 
