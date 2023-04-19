@@ -26,7 +26,7 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
             sum += aTile[threadIdx.y * tile_dim + i] * bTile[i * tile_dim + threadIdx.x];
         }
 
-        __syncthreads(); 
+        // __syncthreads(); 
     }
 
     c[row * N + col] = sum;
