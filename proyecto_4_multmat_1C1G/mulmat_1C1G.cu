@@ -30,6 +30,7 @@
 
 #define TEST
 // #define DEBUG
+#define DEBUG_CUDA
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -209,12 +210,28 @@ int main(int argc, char **argv)
 
     multiply_row(h_A, h_B, h_C, m, n, k, f);
 
-#pragma omp parallel                   
-{
-    printf("Hello World... from thread = %d\n", 
-           omp_get_thread_num());
-}  
+// #pragma omp parallel 
+// {
+//     printf("Hello World... from thread = %d\n", 
+//            omp_get_thread_num());
+// }  
 
+
+#ifdef DEBUG_CUDA
+    printf("DEBUG CUDA!!! ----------- \n\n");
+
+    printf("A: \n");
+    print_matrix(A, m, w);
+
+    printf("B: \n");
+    print_matrix(B, w, n);
+
+    printf("CUDA: \n");
+    print_matrix(res, m, n);
+
+    printf("HOST SECUENTIAL\n");
+    print_matrix(host, m, n);
+#endif
 
 #ifdef TEST
     // check result
