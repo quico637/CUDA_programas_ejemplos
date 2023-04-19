@@ -76,14 +76,15 @@ NVCC            ?= $(CUDA_BIN_PATH)/nvcc
 GCC             ?= g++
 
 # Extra user flags
-EXTRA_NVCCFLAGS ?= -Xcompiler –fopenmp
-EXTRA_LDFLAGS   ?= –fopenmp
+EXTRA_NVCCFLAGS ?= -Xcompiler -fopenmp
+EXTRA_LDFLAGS   ?= -fopenmp
 
 # CUDA code generation flags
 #GENCODE_SM10    := -gencode arch=compute_10,code=sm_10
 GENCODE_SM20    := -gencode arch=compute_20,code=sm_20
 GENCODE_SM30    := -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35
-GENCODE_FLAGS   := $(GENCODE_SM10) $(GENCODE_SM20) $(GENCODE_SM30)
+#GENCODE_FLAGS   := $(GENCODE_SM10) $(GENCODE_SM20) $(GENCODE_SM30)
+GENCODE_FLAGS   :=  $(GENCODE_SM20) 
 
 # OS-specific build flags
 ifneq ($(DARWIN),) 
@@ -101,7 +102,7 @@ endif
 
 # OS-architecture specific flags
 ifeq ($(OS_SIZE),32)
-      NVCCFLAGS := -m32
+      NVCCFLAGS := -m32 
 else
       NVCCFLAGS := -m64
 endif
@@ -109,7 +110,7 @@ endif
 # Debug build flags
 ifeq ($(dbg),1)
       CCFLAGS   += -g
-      NVCCFLAGS += -g -G  --ptxas-options -v
+      NVCCFLAGS += -g -G --ptxas-options -v
       TARGET := debug
 else
       TARGET := release
@@ -118,25 +119,21 @@ endif
 # Target rules
 all: build
 
-build: multmat_1C1G
+build: mulmat_1C1G
  
 
-multmat_1C1G.o: multmat_1C1G.cu multmat_1C1G_kernel.cu
-	$(NVCC) $(NVCCFLAGS)  $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
+mulmat_1C1G.o: mulmat_1C1G.cu sharedMultiply_kernel.cu 
+	$(NVCC)  $(NVCCFLAGS)   $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
 
 
-multmat_1C1G: multmat_1C1G.o
+mulmat_1C1G: mulmat_1C1G.o
 	$(GCC) $(CCFLAGS) -o $@ $+ $(LDFLAGS) $(EXTRA_LDFLAGS)
 	mkdir -p ../../bin/$(OSLOWER)/$(TARGET)
 	cp $@ ../../bin/$(OSLOWER)/$(TARGET)
 
 
-
-
-
-
 run: build
-	./multmat_1C1G
+	./mulmat_1C1G
 
 clean:
-	rm -f multmat_1C1G *.o 
+	rm -f mulmat_1C1G *.o 
