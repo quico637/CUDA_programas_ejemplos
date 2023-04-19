@@ -30,7 +30,7 @@
 
 #define TEST
 // #define DEBUG
-// #define DEBUG_CUDA
+#define DEBUG_CUDA
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -208,13 +208,6 @@ int main(int argc, char **argv)
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
 
-    multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-
-// #pragma omp parallel 
-// {
-//     printf("Hello World... from thread = %d\n", 
-//            omp_get_thread_num());
-// }  
 
 
 #ifdef DEBUG_CUDA
@@ -230,6 +223,16 @@ int main(int argc, char **argv)
     print_matrix(h_C, m, n);
 
 #endif
+
+
+    multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+
+// #pragma omp parallel 
+// {
+//     printf("Hello World... from thread = %d\n", 
+//            omp_get_thread_num());
+// }  
+
 
 #ifdef TEST
     // check result
