@@ -10,7 +10,7 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
 
     for (int tileIdx = 0; tileIdx < K / tile_dim; tileIdx++)
     {
-        int row = blockIdx.y * blockDim.y + threadIdx.y;
+        int row = tileIdx * blockDim.y + threadIdx.y;
         int col = tileIdx * blockDim.x + threadIdx.x;
         
 
