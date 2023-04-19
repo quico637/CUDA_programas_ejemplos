@@ -76,7 +76,7 @@ NVCC            ?= $(CUDA_BIN_PATH)/nvcc
 GCC             ?= g++
 
 # Extra user flags
-EXTRA_NVCCFLAGS ?= -Xcompiler –fopenmp
+EXTRA_NVCCFLAGS ?=
 EXTRA_LDFLAGS   ?=
 
 # CUDA code generation flags
@@ -114,6 +114,8 @@ ifeq ($(dbg),1)
 else
       TARGET := release
 endif
+
+NVCCFLAGS = -Xcompiler –fopenmp + NVCCFLAGS
 
 # Target rules
 all: build
