@@ -15,7 +15,7 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
         row = blockIdx.y * blockDim.y + threadIdx.y;
         col = blockIdx.x * blockDim.x + threadIdx.x;
 
-        if (row >= F)
+        if (row >= (M - F))
             break;
         
 
@@ -32,6 +32,6 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
         // __syncthreads(); 
     }
 
-    if (row < F)
+    if (row < (M - F))
         c[row * N + col] = sum;
 }
