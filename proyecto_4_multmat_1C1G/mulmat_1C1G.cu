@@ -11,6 +11,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include <omp.h>
+
 // includes, project
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -20,12 +22,11 @@
 #include <helper_functions.h>
 #include <helper_cuda.h>
 #include <timer.h>
-#include <omp.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
 // includes, kernels
-#include "mulmat_1C1G_kernel.cu"
+#include "multmat_1G_kernel.cu"
 
 #define TEST
 // #define DEBUG
@@ -33,7 +34,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
-
 
 float * multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 {
@@ -47,8 +47,6 @@ float * multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
             {
                 C[i * n + j] += A[i * w + k] * B[k * n + j];
             }
-
-            assert(C[i * n + j] - res[i * n + j] <= 1e-3);
             
         }
     }
@@ -90,6 +88,8 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
 void test(float *A, float *B,  float *res, int m, int n, int w)
 {
 
+    
+
     float *host = multiply(A, B, res, m, n, w);
 
 
@@ -121,7 +121,7 @@ int main(int argc, char **argv)
     int n = 1;   // n
     int k = 1;
     int w = 1;
-    int f = 1
+    int f = 1;
 
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
@@ -183,8 +183,8 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
 
     // execute the kernel
-    printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads)\n",
-           grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y);
+    printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - M: %d, N: %d, K: %d, W: %d\n",
+           grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y, m, n, k, w);
 
     // create events
     checkCudaErrors(cudaEventCreate(&start_event, 0));
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
 
-    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, n, w, f);
+    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w, f);
 
     // wait for thread completion
     cudaThreadSynchronize();
@@ -206,17 +206,6 @@ int main(int argc, char **argv)
     printf("Processing time: %f (ms)\n", processing_time);
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
-
-
-    // HOST COMPUTE LAST F ROWS
-
-#pragma omp parallel
-  {
-#if defined(_OPENMP)
-    iam = omp_get_thread_num();
-#endif
-    printf("Hello world from thread: %d", iam);
-  }
 
     multiply_row(h_A, h_B, h_C, m, n, k, f);
 
