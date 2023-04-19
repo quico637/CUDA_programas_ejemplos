@@ -122,7 +122,7 @@ all: build
 build: mulmat_1C1G
  
 
-mulmat_1C1G.o: mulmat_1C1G.cu sharedMultiply_kernel.cu 
+mulmat_1C1G.o: mulmat_1C1G.cu mulmat_1C1G_kernel.cu 
 	$(NVCC)  $(NVCCFLAGS)   $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
 
 
