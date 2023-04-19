@@ -76,8 +76,8 @@ NVCC            ?= $(CUDA_BIN_PATH)/nvcc
 GCC             ?= g++
 
 # Extra user flags
-EXTRA_NVCCFLAGS ?=
-EXTRA_LDFLAGS   ?=
+EXTRA_NVCCFLAGS ?= -Xcompiler –fopenmp
+EXTRA_LDFLAGS   ?= –fopenmp
 
 # CUDA code generation flags
 #GENCODE_SM10    := -gencode arch=compute_10,code=sm_10
@@ -114,9 +114,6 @@ ifeq ($(dbg),1)
 else
       TARGET := release
 endif
-
-NVCCFLAGS := -Xcompiler –fopenmp
-EXTRA_NVCCFLAGS := -fopenmp
 
 # Target rules
 all: build
