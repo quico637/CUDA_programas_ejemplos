@@ -209,6 +209,12 @@ int main(int argc, char **argv)
 
     multiply_row(h_A, h_B, h_C, m, n, k, f);
 
+#pragma omp parallel                   
+{
+    printf("Hello World... from thread = %d\n", 
+           omp_get_thread_num());
+}  
+
 
 #ifdef TEST
     // check result
