@@ -8,10 +8,13 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
 
     float sum = 0.0f;
 
+    int row, col;
+
+
     for (int tileIdx = 0; tileIdx < K / tile_dim; tileIdx++)
     {
-        int row = blockIdx.y * blockDim.y + threadIdx.y;
-        int col = blockIdx.x * blockDim.x + threadIdx.x;
+        row = blockIdx.y * blockDim.y + threadIdx.y;
+        col = blockIdx.x * blockDim.x + threadIdx.x;
         
 
         aTile[threadIdx.y * tile_dim + threadIdx.x] = a[row * K + tileIdx * tile_dim + threadIdx.x];
