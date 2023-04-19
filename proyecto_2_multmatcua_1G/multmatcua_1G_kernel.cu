@@ -19,7 +19,7 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, int N, const int 
         
 
         aTile[threadIdx.y * tile_dim + threadIdx.x] = a[row * N + tile_dim * tileIdx + threadIdx.x];
-        bTile[threadIdx.y * tile_dim + threadIdx.x] = b[threadIdx.y * N + tile_dim * tileIdx + col];
+        bTile[threadIdx.y * tile_dim + threadIdx.x] = b[threadIdx.y * N + tile_dim * tileIdx * N + col];
 
         __syncthreads(); // warp usa datos de B leídos por otro warp
 
