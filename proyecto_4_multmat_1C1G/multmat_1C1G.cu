@@ -33,6 +33,27 @@
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
 
+
+float * multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
+{
+
+    for (int i = row; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            C[i * n + j] = 0.0f;
+            for (int k = 0; k < w; k++)
+            {
+                C[i * n + j] += A[i * w + k] * B[k * n + j];
+            }
+
+            assert(C[i * n + j] - res[i * n + j] <= 1e-3);
+            
+        }
+    }
+    return C;
+}
+
 void print_matrix(float *m, int t1, int t2)
 {
     for(int i = 0; i < t1; i++)
@@ -58,7 +79,7 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
                 C[i * n + j] += A[i * w + k] * B[k * n + j];
             }
 
-            // assert(C[i * n + j] - res[i * n + j] <= 1e-3);
+            assert(C[i * n + j] - res[i * n + j] <= 1e-3);
             
         }
     }
@@ -67,8 +88,6 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
 
 void test(float *A, float *B,  float *res, int m, int n, int w)
 {
-
-    
 
     float *host = multiply(A, B, res, m, n, w);
 
@@ -101,6 +120,7 @@ int main(int argc, char **argv)
     int n = 1;   // n
     int k = 1;
     int w = 1;
+    int f = 1
 
     // Error code to check return values for CUDA calls
     cudaError_t err = cudaSuccess;
@@ -114,6 +134,7 @@ int main(int argc, char **argv)
     n = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"N") ?: n;
     k = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"K") ?: k;
     w = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"W") ?: w;
+    f = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"F") ?: f;
 
     assert(m % w == 0);
     assert(n % w == 0);
@@ -130,10 +151,9 @@ int main(int argc, char **argv)
 
     int s = m / w;
     int t = n / w;
-    // int r = k / w ;
 
     // setup execution parameters
-    dim3 grid(s, t);
+    dim3 grid(t, s);
     dim3 block(w, w);
 
     // allocate host memory
@@ -173,7 +193,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
 
-    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, n, w);
+    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, n, w, f);
 
     // wait for thread completion
     cudaThreadSynchronize();
@@ -185,6 +205,12 @@ int main(int argc, char **argv)
     printf("Processing time: %f (ms)\n", processing_time);
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
+
+
+    // HOST COMPUTE LAST F ROWS
+
+    multiply_row(h_A, h_B, h_C, m, n, k, f);
+
 
 #ifdef TEST
     // check result
