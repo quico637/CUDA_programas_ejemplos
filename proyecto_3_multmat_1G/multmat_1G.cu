@@ -134,7 +134,7 @@ int main(int argc, char **argv)
     int t = n / w;
 
     // setup execution parameters
-    dim3 grid(s, t);
+    dim3 grid(t, s);
     dim3 block(w, w);
 
     // allocate host memory
