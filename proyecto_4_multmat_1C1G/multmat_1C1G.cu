@@ -20,6 +20,7 @@
 #include <helper_functions.h>
 #include <helper_cuda.h>
 #include <timer.h>
+#include <omp.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -208,6 +209,14 @@ int main(int argc, char **argv)
 
 
     // HOST COMPUTE LAST F ROWS
+
+#pragma omp parallel
+  {
+#if defined(_OPENMP)
+    iam = omp_get_thread_num();
+#endif
+    printf("Hello world from thread: %d", iam);
+  }
 
     multiply_row(h_A, h_B, h_C, m, n, k, f);
 
