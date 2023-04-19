@@ -221,16 +221,14 @@ int main(int argc, char **argv)
     printf("DEBUG CUDA!!! ----------- \n\n");
 
     printf("A: \n");
-    print_matrix(A, m, w);
+    print_matrix(h_A, m, w);
 
     printf("B: \n");
-    print_matrix(B, w, n);
+    print_matrix(h_B, w, n);
 
     printf("CUDA: \n");
-    print_matrix(res, m, n);
+    print_matrix(h_C, m, n);
 
-    printf("HOST SECUENTIAL\n");
-    print_matrix(host, m, n);
 #endif
 
 #ifdef TEST
