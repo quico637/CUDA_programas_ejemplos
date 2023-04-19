@@ -115,7 +115,7 @@ else
       TARGET := release
 endif
 
-NVCCFLAGS += -Xcompiler –fopenmp
+NVCCFLAGS := -Xcompiler –fopenmp
 
 # Target rules
 all: build
