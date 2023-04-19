@@ -4,12 +4,12 @@ repetidamente (w veces) */
 __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, const int N, const int K, const int tile_dim)
 {
     extern __shared__ float aTile[];
+    float *bTile = aTile + (tile_dim * tile_dim);
 
     float sum = 0.0f;
 
     for (int tileIdx = 0; tileIdx < K / tile_dim; tileIdx++)
     {
-        float *bTile = aTile + (tile_dim * tile_dim);
         int row = blockIdx.y * blockDim.y + threadIdx.y;
         int col = tileIdx * blockDim.x + threadIdx.x;
         
