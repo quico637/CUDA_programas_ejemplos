@@ -10,12 +10,12 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
 
     for (int tileIdx = 0; tileIdx < K / tile_dim; tileIdx++)
     {
-        int row = tileIdx * blockDim.y + threadIdx.y;
-        int col = tileIdx * blockDim.x + threadIdx.x;
+        int row = blockIdx.y * blockDim.y + threadIdx.y;
+        int col = blockIdx.x * blockDim.x + threadIdx.x;
         
 
-        aTile[threadIdx.y * tile_dim + threadIdx.x] = a[row * K + threadIdx.x];
-        bTile[threadIdx.y * tile_dim + threadIdx.x] = b[threadIdx.y * N + col];
+        aTile[threadIdx.y * tile_dim + threadIdx.x] = a[row * K + tileIdx * tile_dim + threadIdx.x];
+        bTile[threadIdx.y * tile_dim + threadIdx.x] = b[threadIdx.y * N + tileIdx * tile_dim + col];
 
         __syncthreads(); // warp usa datos de B leídos por otro warp
 
@@ -26,9 +26,6 @@ __global__ void sharedABMultiply(float *a, float *b, float *c, const int M, cons
 
         __syncthreads(); 
     }
-
-    int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     c[row * N + col] = sum;
 }
