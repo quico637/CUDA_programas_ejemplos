@@ -116,7 +116,7 @@ else
 endif
 
 NVCCFLAGS += -Xcompiler –fopenmp
-EXTRA_NVCCFLAGS += -fopenmp
+EXTRA_NVCCFLAGS += - Xcompiler -fopenmp
 
 # Target rules
 all: build
