@@ -39,6 +39,7 @@
 float * multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 {
 
+    #pragma omp parallel for
     for (int i = row; i < m; i++)
     {
         for (int j = 0; j < n; j++)

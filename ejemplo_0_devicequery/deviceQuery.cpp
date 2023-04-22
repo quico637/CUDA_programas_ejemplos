@@ -33,7 +33,7 @@ char **pArgv = NULL;
 template <class T>
 inline void getCudaAttribute(T *attribute, CUdevice_attribute device_attribute, int device)
 {
-    CUresult error =    cuDeviceGetAttribute(attribute, device_attribute, device);
+    CUresult error = cuDeviceGetAttribute(attribute, device_attribute, device);
 
     if (CUDA_SUCCESS != error)
     {
@@ -55,8 +55,7 @@ inline void getCudaAttribute(T *attribute, CUdevice_attribute device_attribute, 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
     pArgc = &argc;
     pArgv = argv;
@@ -97,12 +96,12 @@ main(int argc, char **argv)
         // Console log
         cudaDriverGetVersion(&driverVersion);
         cudaRuntimeGetVersion(&runtimeVersion);
-        printf("  CUDA Driver Version / Runtime Version          %d.%d / %d.%d\n", driverVersion/1000, (driverVersion%100)/10, runtimeVersion/1000, (runtimeVersion%100)/10);
+        printf("  CUDA Driver Version / Runtime Version          %d.%d / %d.%d\n", driverVersion / 1000, (driverVersion % 100) / 10, runtimeVersion / 1000, (runtimeVersion % 100) / 10);
         printf("  CUDA Capability Major/Minor version number:    %d.%d\n", deviceProp.major, deviceProp.minor);
 
         char msg[256];
         SPRINTF(msg, "  Total amount of global memory:                 %.0f MBytes (%llu bytes)\n",
-                (float)deviceProp.totalGlobalMem/1048576.0f, (unsigned long long) deviceProp.totalGlobalMem);
+                (float)deviceProp.totalGlobalMem / 1048576.0f, (unsigned long long)deviceProp.totalGlobalMem);
         printf("%s", msg);
 
         printf("  (%2d) Multiprocessors, (%3d) CUDA Cores/MP:     %d CUDA Cores\n",
@@ -111,11 +110,10 @@ main(int argc, char **argv)
                _ConvertSMVer2Cores(deviceProp.major, deviceProp.minor) * deviceProp.multiProcessorCount);
         printf("  GPU Max Clock rate:                            %.0f MHz (%0.2f GHz)\n", deviceProp.clockRate * 1e-3f, deviceProp.clockRate * 1e-6f);
 
-
 #if CUDART_VERSION >= 5000
         // This is supported in CUDA 5.0 (runtime API device properties)
         printf("  Memory Clock rate:                             %.0f Mhz\n", deviceProp.memoryClockRate * 1e-3f);
-        printf("  Memory Bus Width:                              %d-bit\n",   deviceProp.memoryBusWidth);
+        printf("  Memory Bus Width:                              %d-bit\n", deviceProp.memoryBusWidth);
 
         if (deviceProp.l2CacheSize)
         {
@@ -141,13 +139,12 @@ main(int argc, char **argv)
 #endif
 
         printf("  Maximum Texture Dimension Size (x,y,z)         1D=(%d), 2D=(%d, %d), 3D=(%d, %d, %d)\n",
-               deviceProp.maxTexture1D   , deviceProp.maxTexture2D[0], deviceProp.maxTexture2D[1],
+               deviceProp.maxTexture1D, deviceProp.maxTexture2D[0], deviceProp.maxTexture2D[1],
                deviceProp.maxTexture3D[0], deviceProp.maxTexture3D[1], deviceProp.maxTexture3D[2]);
         printf("  Maximum Layered 1D Texture Size, (num) layers  1D=(%d), %d layers\n",
                deviceProp.maxTexture1DLayered[0], deviceProp.maxTexture1DLayered[1]);
         printf("  Maximum Layered 2D Texture Size, (num) layers  2D=(%d, %d), %d layers\n",
                deviceProp.maxTexture2DLayered[0], deviceProp.maxTexture2DLayered[1], deviceProp.maxTexture2DLayered[2]);
-
 
         printf("  Total amount of constant memory:               %lu bytes\n", deviceProp.totalConstMem);
         printf("  Total amount of shared memory per block:       %lu bytes\n", deviceProp.sharedMemPerBlock);
@@ -178,14 +175,13 @@ main(int argc, char **argv)
         printf("  Device PCI Domain ID / Bus ID / location ID:   %d / %d / %d\n", deviceProp.pciDomainID, deviceProp.pciBusID, deviceProp.pciDeviceID);
 
         const char *sComputeMode[] =
-        {
-            "Default (multiple host threads can use ::cudaSetDevice() with device simultaneously)",
-            "Exclusive (only one host thread in one process is able to use ::cudaSetDevice() with this device)",
-            "Prohibited (no host thread can use ::cudaSetDevice() with this device)",
-            "Exclusive Process (many threads in one process is able to use ::cudaSetDevice() with this device)",
-            "Unknown",
-            NULL
-        };
+            {
+                "Default (multiple host threads can use ::cudaSetDevice() with device simultaneously)",
+                "Exclusive (only one host thread in one process is able to use ::cudaSetDevice() with this device)",
+                "Prohibited (no host thread can use ::cudaSetDevice() with this device)",
+                "Exclusive Process (many threads in one process is able to use ::cudaSetDevice() with this device)",
+                "Unknown",
+                NULL};
         printf("  Compute Mode:\n");
         printf("     < %s >\n", sComputeMode[deviceProp.computeMode]);
     }
@@ -197,7 +193,7 @@ main(int argc, char **argv)
         int gpuid[64]; // we want to find the first two GPUs that can support P2P
         int gpu_p2p_count = 0;
 
-        for (int i=0; i < deviceCount; i++)
+        for (int i = 0; i < deviceCount; i++)
         {
             checkCudaErrors(cudaGetDeviceProperties(&prop[i], i));
 
@@ -207,7 +203,7 @@ main(int argc, char **argv)
                 // on Windows (64-bit), the Tesla Compute Cluster driver for windows must be enabled to support this
                 && prop[i].tccDriver
 #endif
-               )
+            )
             {
                 // This is an array of P2P capable GPUs
                 gpuid[gpu_p2p_count++] = i;
@@ -228,8 +224,8 @@ main(int argc, char **argv)
                         continue;
                     }
                     checkCudaErrors(cudaDeviceCanAccessPeer(&can_access_peer, gpuid[i], gpuid[j]));
-                        printf("> Peer access from %s (GPU%d) -> %s (GPU%d) : %s\n", prop[gpuid[i]].name, gpuid[i],
-                           prop[gpuid[j]].name, gpuid[j] ,
+                    printf("> Peer access from %s (GPU%d) -> %s (GPU%d) : %s\n", prop[gpuid[i]].name, gpuid[i],
+                           prop[gpuid[j]].name, gpuid[j],
                            can_access_peer ? "Yes" : "No");
                 }
             }
@@ -246,20 +242,20 @@ main(int argc, char **argv)
     // driver version
     sProfileString += ", CUDA Driver Version = ";
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)
-    sprintf_s(cTemp, 10, "%d.%d", driverVersion/1000, (driverVersion%100)/10);
+    sprintf_s(cTemp, 10, "%d.%d", driverVersion / 1000, (driverVersion % 100) / 10);
 #else
-    sprintf(cTemp, "%d.%d", driverVersion/1000, (driverVersion%100)/10);
+    sprintf(cTemp, "%d.%d", driverVersion / 1000, (driverVersion % 100) / 10);
 #endif
-    sProfileString +=  cTemp;
+    sProfileString += cTemp;
 
     // Runtime version
     sProfileString += ", CUDA Runtime Version = ";
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)
-    sprintf_s(cTemp, 10, "%d.%d", runtimeVersion/1000, (runtimeVersion%100)/10);
+    sprintf_s(cTemp, 10, "%d.%d", runtimeVersion / 1000, (runtimeVersion % 100) / 10);
 #else
-    sprintf(cTemp, "%d.%d", runtimeVersion/1000, (runtimeVersion%100)/10);
+    sprintf(cTemp, "%d.%d", runtimeVersion / 1000, (runtimeVersion % 100) / 10);
 #endif
-    sProfileString +=  cTemp;
+    sProfileString += cTemp;
 
     // Device count
     sProfileString += ", NumDevs = ";
