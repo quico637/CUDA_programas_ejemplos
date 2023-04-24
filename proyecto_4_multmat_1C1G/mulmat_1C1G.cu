@@ -32,6 +32,8 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
+#define NUM_THREADS 16
+
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,9 +44,9 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
     float s = 0.0f;
     int i, j, k;
 
-// #pragma omp parallel private(i, j, k)
-//     {
-//         #pragma omp for private(s)
+#pragma omp parallel private(i, j, k)
+    {
+#pragma omp for
         for (i = row; i < m; i++)
         {
             for (j = 0; j < n; j++)
@@ -58,7 +60,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
                 C[i * n + j] = s;
             }
         }
-    
+    }
 
     return C;
 }
@@ -119,6 +121,8 @@ int main(int argc, char **argv)
     float *d_A, *d_B, *d_C; // device data
     size_t size_A, size_B, size_C;
     size_t nBytes_A, nBytes_B, nBytes_C;
+
+    omp_set_num_threads(NUM_THREADS);
 
     // default values
 
