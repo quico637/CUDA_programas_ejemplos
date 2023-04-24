@@ -28,7 +28,7 @@
 // includes, kernels
 #include "mulmat_1C1G_kernel.cu"
 
-// #define TEST
+#define TEST
 // #define DEBUG
 // #define DEBUG_CUDA
 
