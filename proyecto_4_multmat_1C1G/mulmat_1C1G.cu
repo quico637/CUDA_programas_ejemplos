@@ -36,43 +36,46 @@
 // Program main
 ////////////////////////////////////////////////////////////////////////////////
 
-float * multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
+float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 {
 
     float s = 0.0f;
     int i, j, k;
 
-    #pragma omp parallel parallel for private(s, i, j, k)
-    for (i = row; i < m; i++)
+#pragma omp parallel parallel private(i, j, k)
     {
-        for (j = 0; j < n; j++)
+        #pragma omp for private(s)
+        for (i = row; i < m; i++)
         {
-            s = 0.0f;
-            for (k = 0; k < w; k++)
+            for (j = 0; j < n; j++)
             {
-                s += A[i * w + k] * B[k * n + j];
-            }
+                s = 0.0f;
+                for (k = 0; k < w; k++)
+                {
+                    s += A[i * w + k] * B[k * n + j];
+                }
 
-            C[i * n + j] = s;
+                C[i * n + j] = s;
+            }
         }
     }
+
     return C;
 }
 
 void print_matrix(float *m, int t1, int t2)
 {
-    for(int i = 0; i < t1; i++)
+    for (int i = 0; i < t1; i++)
     {
-        for(int j = 0; j < t2; j++)
+        for (int j = 0; j < t2; j++)
             printf("%f ", m[i * t2 + j]);
         printf("\n");
     }
 }
 
-
-float * multiply(float *A, float *B,  float *res, int m, int n, int w)
+float *multiply(float *A, float *B, float *res, int m, int n, int w)
 {
-    float *C =(float*) malloc(m * n * sizeof(float));
+    float *C = (float *)malloc(m * n * sizeof(float));
 
     for (int i = 0; i < m; i++)
     {
@@ -85,19 +88,15 @@ float * multiply(float *A, float *B,  float *res, int m, int n, int w)
             }
 
             assert(C[i * n + j] - res[i * n + j] <= 1e-3);
-            
         }
     }
     return C;
 }
 
-void test(float *A, float *B,  float *res, int m, int n, int w)
+void test(float *A, float *B, float *res, int m, int n, int w)
 {
 
-    
-
     float *host = multiply(A, B, res, m, n, w);
-
 
 #ifdef DEBUG
     printf("A: \n");
@@ -124,7 +123,7 @@ int main(int argc, char **argv)
     // default values
 
     int m = 1;
-    int n = 1;   // n
+    int n = 1; // n
     int k = 1;
     int w = 1;
     int f = 1;
@@ -154,7 +153,6 @@ int main(int argc, char **argv)
     nBytes_A = size_A * sizeof(float);
     nBytes_B = size_B * sizeof(float);
     nBytes_C = size_C * sizeof(float);
-
 
     int s = m / w;
     int t = n / w;
@@ -199,7 +197,6 @@ int main(int argc, char **argv)
     // using events
     checkCudaErrors(cudaEventRecord(start_event, 0));
 
-
     sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w, f);
 
     // wait for thread completion
@@ -212,8 +209,6 @@ int main(int argc, char **argv)
     printf("Processing time: %f (ms)\n", processing_time);
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
-
-
 
 #ifdef DEBUG_CUDA
     printf("DEBUG CUDA!!! ----------- \n\n");
@@ -229,15 +224,13 @@ int main(int argc, char **argv)
 
 #endif
 
-
     multiply_row(h_A, h_B, h_C, m, n, k, m - f);
 
-// #pragma omp parallel 
-// {
-//     printf("Hello World... from thread = %d\n", 
-//            omp_get_thread_num());
-// }  
-
+    // #pragma omp parallel
+    // {
+    //     printf("Hello World... from thread = %d\n",
+    //            omp_get_thread_num());
+    // }
 
 #ifdef TEST
     // check result
