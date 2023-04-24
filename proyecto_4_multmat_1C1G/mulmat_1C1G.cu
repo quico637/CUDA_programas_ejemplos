@@ -41,24 +41,17 @@
 float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 {
 
-    float s = 0.0f;
     int i, j, k;
 
-#pragma omp parallel private(i, j, k)
+#pragma omp parallel for private(i, j, k)
+    for (i = row; i < m; i++)
     {
-#pragma omp for
-        for (i = row; i < m; i++)
+        for (j = 0; j < n; j++)
         {
-            for (j = 0; j < n; j++)
-            {
-                s = 0.0f;
-                for (k = 0; k < w; k++)
-                {
-                    s += A[i * w + k] * B[k * n + j];
-                }
-
-                C[i * n + j] = s;
-            }
+            C[i * n + j] = 0.0f;
+            for (k = 0; k < w; k++)
+                C[i * n + j] += A[i * w + k] * B[k * n + j];
+            
         }
     }
 
