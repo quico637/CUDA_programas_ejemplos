@@ -40,14 +40,15 @@ float * multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 {
 
     float s = 0.0f;
+    int i, j, k;
 
     #pragma omp parallel parallel for private(s, i, j, k)
-    for (int i = row; i < m; i++)
+    for (i = row; i < m; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (j = 0; j < n; j++)
         {
             s = 0.0f;
-            for (int k = 0; k < w; k++)
+            for (k = 0; k < w; k++)
             {
                 s += A[i * w + k] * B[k * n + j];
             }
