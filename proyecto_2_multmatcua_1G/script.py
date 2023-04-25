@@ -4,9 +4,10 @@ import time
 FILE = "file-2.csv"
 COMPILED_FILE = "./multmatcua_1G"
 
-os.system("make")
 
 os.system("rm -f " + COMPILED_FILE)
+os.system("make")
+
 os.system("echo  >> " + FILE)
 
 DIM_MAT = [512, 1024, 2048, 4096]

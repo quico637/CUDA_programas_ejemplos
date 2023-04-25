@@ -4,9 +4,10 @@ import time
 FILE = "file-1.csv"
 COMPILED_FILE = "./compara_kernels"
 
+os.system("rm -f " + COMPILED_FILE)
 os.system("make")
 
-os.system("rm -f " + COMPILED_FILE)
+
 os.system("echo  >> " + FILE)
 
 DIM_MAT = [512, 1024, 2048, 4096]
