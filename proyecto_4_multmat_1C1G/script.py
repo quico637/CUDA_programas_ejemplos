@@ -2,7 +2,7 @@ import os
 import time
 
 FILE = "file-4.csv"
-COMPILED_FILE = "./multmat_1C1G"
+COMPILED_FILE = "./mulmat_1C1G"
 
 
 os.system("rm -f " + COMPILED_FILE)

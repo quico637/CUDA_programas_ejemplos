@@ -118,14 +118,14 @@ endif
 # Target rules
 all: build
 
-build: multmat_1G
+build: mulmat_1G
  
 
-multmat_1G.o: multmat_1G.cu multmat_1G_kernel.cu
+mulmat_1G.o: mulmat_1G.cu mulmat_1G_kernel.cu
 	$(NVCC) $(NVCCFLAGS)  $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
 
 
-multmat_1G: multmat_1G.o
+mulmat_1G: mulmat_1G.o
 	$(GCC) $(CCFLAGS) -o $@ $+ $(LDFLAGS) $(EXTRA_LDFLAGS)
 	mkdir -p ../../bin/$(OSLOWER)/$(TARGET)
 	cp $@ ../../bin/$(OSLOWER)/$(TARGET)
@@ -136,7 +136,7 @@ multmat_1G: multmat_1G.o
 
 
 run: build
-	./multmat_1G
+	./mulmat_1G
 
 clean:
-	rm -f multmat_1G *.o 
+	rm -f mulmat_1G *.o 

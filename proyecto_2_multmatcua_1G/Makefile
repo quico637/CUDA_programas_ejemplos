@@ -118,14 +118,14 @@ endif
 # Target rules
 all: build
 
-build: multmatcua_1G
+build: mulmatcua_1G
  
 
-multmatcua_1G.o: multmatcua_1G.cu multmatcua_1G_kernel.cu
+mulmatcua_1G.o: mulmatcua_1G.cu mulmatcua_1G_kernel.cu
 	$(NVCC) $(NVCCFLAGS)  $(EXTRA_NVCCFLAGS) -I$(CUDA_INC_PATH) -I$(CUDA_INC_PATH_COMMON) $(GENCODE_FLAGS) -o $@ -c $<
 
 
-multmatcua_1G: multmatcua_1G.o
+mulmatcua_1G: mulmatcua_1G.o
 	$(GCC) $(CCFLAGS) -o $@ $+ $(LDFLAGS) $(EXTRA_LDFLAGS)
 	mkdir -p ../../bin/$(OSLOWER)/$(TARGET)
 	cp $@ ../../bin/$(OSLOWER)/$(TARGET)
@@ -136,7 +136,7 @@ multmatcua_1G: multmatcua_1G.o
 
 
 run: build
-	./multmatcua_1G
+	./mulmatcua_1G
 
 clean:
-	rm -f multmatcua_1G *.o 
+	rm -f mulmatcua_1G *.o 
