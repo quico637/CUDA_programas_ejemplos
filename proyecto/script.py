@@ -8,7 +8,7 @@ os.system("rm -f " + COMPILED_FILE)
 os.system("make")
 
 
-os.system("echo  >> " + FILE)
+os.system("echo  > \"\"" + FILE)
 
 DIM_MAT = [512, 1024, 2048, 4096]
 TAM_BLO = [4, 8, 16, 32]

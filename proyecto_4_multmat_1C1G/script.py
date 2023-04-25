@@ -7,7 +7,8 @@ COMPILED_FILE = "./multmat_1C1G"
 
 os.system("rm -f " + COMPILED_FILE)
 os.system("make")
-os.system("echo  >> " + FILE)
+
+os.system("echo  > \"\"" + FILE)
 
 FILAS = [0, 4, 8, 12, 16, 20, 24, 28, 32, 64]
 
