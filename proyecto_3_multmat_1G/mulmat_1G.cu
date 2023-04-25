@@ -26,7 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // includes, kernels
-#include "multmat_1G_kernel.cu"
+#include "mulmat_1G_kernel.cu"
 
 // #define TEST
 // #define DEBUG

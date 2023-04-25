@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // includes, kernels
-#include "multmatcua_1G_kernel.cu"
+#include "mulmatcua_1G_kernel.cu"
 
 // #define TEST
 // #define DEBUG
