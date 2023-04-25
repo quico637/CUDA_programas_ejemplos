@@ -26,7 +26,7 @@
 // includes, kernels
 #include "multmatcua_1G_kernel.cu"
 
-#define TEST
+// #define TEST
 // #define DEBUG
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -144,8 +144,8 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaMemset(d_C, 0, nBytes));
 
     // execute the kernel
-    printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads)\n",
-           grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y);
+    // printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads)\n",
+    //        grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y);
 
     // create events
     checkCudaErrors(cudaEventCreate(&start_event, 0));
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaEventRecord(stop_event, 0));
     cudaEventSynchronize(stop_event); // block until the event is actually recorded
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
-    printf("Processing time: %f (ms)\n", processing_time);
+    // printf("Processing time: %f (ms)\n", processing_time);
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes, cudaMemcpyDeviceToHost));
 
@@ -180,7 +180,9 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaFree((void *)d_B));
     checkCudaErrors(cudaFree((void *)d_C));
 
-    printf("\nTest PASSED\n");
+    // printf("\nTest PASSED\n");
+
+    printf("%d;%d;%.2lf\n", dim_mat, dim_block, processing_time);
 
     //    cudaThreadExit();
 

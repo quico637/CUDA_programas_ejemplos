@@ -18,4 +18,4 @@ os.system("echo \"Kernel;Dim mat;Block Size;Time (ms)\" >> " + FILE)
 for k in KERNELS:
     for i in DIM_MAT:
         for b in TAM_BLO:
-            os.system(COMPILED_FILE + " " + str(i) + " " +  str(b) + " " + str(k) + " >> " + FILE)
+            os.system(COMPILED_FILE + " --N=" + str(i) + " --W=" +  str(b) + " --K=" + str(k) + " >> " + FILE)
