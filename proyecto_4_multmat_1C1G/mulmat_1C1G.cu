@@ -258,4 +258,5 @@ int main(int argc, char **argv)
         fprintf(stderr, "Failed to deinitialize the device! error=%s\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
+
 }
