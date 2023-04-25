@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-#define NUM_THREADS 8
+// #define NUM_THREADS 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -43,7 +43,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 
     int i, j, k;
 
-#pragma omp parallel for private(i, j, k) schedule(dynamic, 2)
+#pragma omp parallel for private(i, j, k) schedule(dynamic, 1)
     for (i = row; i < m; i++)
     {
         for (j = 0; j < n; j++)
@@ -115,8 +115,11 @@ int main(int argc, char **argv)
     size_t size_A, size_B, size_C;
     size_t nBytes_A, nBytes_B, nBytes_C;
 
+#ifdef NUM_THREADS
     omp_set_num_threads(NUM_THREADS);
-
+#else
+    omp_set_num_threads(omp_get_max_threads());
+#endif
     // default values
 
     int m = 1;
