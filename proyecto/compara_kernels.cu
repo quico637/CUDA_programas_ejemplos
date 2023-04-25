@@ -189,6 +189,8 @@ int main(int argc, char **argv)
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
 
+    // omen
+
 #ifdef TEST
     // check result
     test(h_A, h_B, h_C, dim_mat, dim_mat, dim_block);
