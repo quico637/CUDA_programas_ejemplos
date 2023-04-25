@@ -199,10 +199,6 @@ int main(int argc, char **argv)
     // wait for thread completion
     cudaThreadSynchronize();
 
-    // ///*using event*/
-    checkCudaErrors(cudaEventRecord(stop_event, 0));
-    cudaEventSynchronize(stop_event); // block until the event is actually recorded
-    checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
     // printf("Processing time: %f (ms)\n", processing_time);
 
     checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
@@ -222,6 +218,11 @@ int main(int argc, char **argv)
 #endif
 
     multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+
+    // ///*using event*/
+    checkCudaErrors(cudaEventRecord(stop_event, 0));
+    cudaEventSynchronize(stop_event); // block until the event is actually recorded
+    checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
 
     // #pragma omp parallel
     // {
