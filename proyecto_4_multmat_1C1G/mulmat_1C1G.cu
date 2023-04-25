@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-#define NUM_THREADS 16
+#define NUM_THREADS 8
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -43,7 +43,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 
     int i, j, k;
 
-#pragma omp parallel for private(i, j, k) collapse(2) schedule(dynamic, 1)
+#pragma omp parallel for private(i, j, k) schedule(dynamic, 2)
     for (i = row; i < m; i++)
     {
         for (j = 0; j < n; j++)
