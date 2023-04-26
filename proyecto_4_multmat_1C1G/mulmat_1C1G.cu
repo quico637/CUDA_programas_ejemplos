@@ -33,7 +33,7 @@
 // #define DEBUG_CUDA
 
 // #define NUM_THREADS 8
-#define SCHEDULE_RATIO 1
+#define SCHEDULE_RATIO 2
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -44,7 +44,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 
     int i, j, k;
 
-#pragma omp for nowait if (omp_get_thread_num() != 0) private(i, j, k)
+#pragma omp for private(i, j, k) schedule(dynamic, SCHEDULE_RATIO)
     for (i = row; i < m; i++)
     {
         for (j = 0; j < n; j++)
@@ -195,14 +195,8 @@ int main(int argc, char **argv)
 #pragma omp parallel num_threads(threads)
     {
 
-        // if (omp_get_thread_num() == 0)
-        // {
 #pragma omp master
         {
-
-            // execute the kernel
-            // printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - M: %d, N: %d, K: %d, W: %d\n",
-            //        grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y, m, n, k, w);
 
             sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w, f);
 
@@ -227,13 +221,10 @@ int main(int argc, char **argv)
 
 #endif
         }
-
-        multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-
-        // else
-        // {
-        //     multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-        // }
+        else
+        {
+            multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+        }
     }
 
     // multiply_row(h_A, h_B, h_C, m, n, k, m - f);
