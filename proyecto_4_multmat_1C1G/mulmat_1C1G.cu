@@ -33,6 +33,7 @@
 // #define DEBUG_CUDA
 
 // #define NUM_THREADS
+#define SCHEDULE_RATIO 1
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -43,7 +44,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 
     int i, j, k;
 
-#pragma omp parallel for private(i, j, k) schedule(dynamic, )
+#pragma omp parallel for private(i, j, k) schedule(dynamic, SCHEDULE_RATIO)
     for (i = row; i < m; i++)
     {
         for (j = 0; j < n; j++)
