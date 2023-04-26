@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-#define NUM_THREADS 9
+// #define NUM_THREADS 8
 #define SCHEDULE_RATIO 1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,11 +116,11 @@ int main(int argc, char **argv)
     size_t nBytes_A, nBytes_B, nBytes_C;
     int threads = omp_get_max_threads();
 
-// #ifdef NUM_THREADS
-//     omp_set_num_threads(NUM_THREADS);
-// #else
-//     omp_set_num_threads(omp_get_max_threads());
-// #endif
+    // #ifdef NUM_THREADS
+    //     omp_set_num_threads(NUM_THREADS);
+    // #else
+    //     omp_set_num_threads(omp_get_max_threads());
+    // #endif
 
 #ifdef NUM_THREADS
     threads = NUM_THREADS;
@@ -185,8 +185,11 @@ int main(int argc, char **argv)
 #pragma omp parallel num_threads(threads)
     {
 
-        if (omp_get_thread_num() == 0)
+        // if (omp_get_thread_num() == 0)
+        // {
+#pragma omp master
         {
+
             // allocate device memory
             checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
             checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_B));
@@ -224,10 +227,13 @@ int main(int argc, char **argv)
 
 #endif
         }
-        else
-        {
-            multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-        }
+
+        multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+
+        // else
+        // {
+        //     multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+        // }
     }
 
     // multiply_row(h_A, h_B, h_C, m, n, k, m - f);
