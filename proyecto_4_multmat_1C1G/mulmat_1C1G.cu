@@ -116,7 +116,6 @@ int main(int argc, char **argv)
     size_t nBytes_A, nBytes_B, nBytes_C;
     int threads = omp_get_max_threads();
 
-
 #ifdef NUM_THREADS
     threads = NUM_THREADS;
 #endif
@@ -177,20 +176,21 @@ int main(int argc, char **argv)
         h_B[i] = rand() / (float)RAND_MAX;
     }
 
+    // allocate device memory
+    checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
+    checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_B));
+    checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_C));
+
+    // copy data from host memory to device memory
+    checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_A, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_B, cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
+
 #pragma omp parallel num_threads(threads)
     {
 
 #pragma omp master
         {
-            // allocate device memory
-            checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
-            checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_B));
-            checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_C));
-
-            // copy data from host memory to device memory
-            checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_A, cudaMemcpyHostToDevice));
-            checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_B, cudaMemcpyHostToDevice));
-            checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
 
             // execute the kernel
             // printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - M: %d, N: %d, K: %d, W: %d\n",
