@@ -44,7 +44,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 
     int i, j, k;
 
-#pragma omp for private(i, j, k) schedule(dynamic, SCHEDULE_RATIO)
+#pragma omp for private(i, j, k)
     for (i = row; i < m; i++)
     {
         for (j = 0; j < n; j++)
