@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-// #define NUM_THREADS
+// #define NUM_THREADS 8
 #define SCHEDULE_RATIO 1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
 #pragma omp parallel
     {
 
-        if (omp_get_thread_num() == 0)
+#pragma omp master
         {
             // allocate device memory
             checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
@@ -225,10 +225,7 @@ int main(int argc, char **argv)
 
 #endif
         }
-        else
-        {
-            multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-        }
+        multiply_row(h_A, h_B, h_C, m, n, k, m - f);
     }
 
     // ///*using event*/
