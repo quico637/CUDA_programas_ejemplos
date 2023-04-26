@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-// #define NUM_THREADS
+#define NUM_THREADS
 #define SCHEDULE_RATIO 1
 
 ////////////////////////////////////////////////////////////////////////////////

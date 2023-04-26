@@ -10,7 +10,7 @@ os.system("make")
 
 os.system("echo  > \"\"" + FILE)
 
-FILAS = [0, 4, 8, 12, 16, 20, 24, 28, 32, 64]
+FILAS = [0, 4, 8, 12, 16, 20, 24, 28, 32]
 
 os.system("echo \"Rows CPU;Time (ms)\" >> " + FILE)
 
