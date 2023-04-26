@@ -1,0 +1,14 @@
+#PBS -V
+#PBS -q batch
+#PBS -l walltime=00:10:00
+#PBS -l nodes=marte:ppn=6
+
+# Cargar el Entorno de Ejecucion
+source /etc/profile.d/modules.sh
+module load cuda
+
+# Situarse en Directorio de Trabajo
+cd $PBS_O_WORKDIR
+
+# Ejecutar la Aplicacion
+./mulmat_1C1G --M=2048 --N=2048 --K=2048 --W=4 --F=4
