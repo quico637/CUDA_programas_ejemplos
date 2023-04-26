@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     float *d_A, *d_B, *d_C; // device data
     size_t size_A, size_B, size_C;
     size_t nBytes_A, nBytes_B, nBytes_C;
-    int threads = omp_get_max_threads();;
+    int threads = omp_get_max_threads();
 
 // #ifdef NUM_THREADS
 //     omp_set_num_threads(NUM_THREADS);
