@@ -221,10 +221,8 @@ int main(int argc, char **argv)
 
 #endif
         }
-        else
-        {
-            multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-        }
+
+        multiply_row(h_A, h_B, h_C, m, n, k, m - f);
     }
 
     // multiply_row(h_A, h_B, h_C, m, n, k, m - f);
