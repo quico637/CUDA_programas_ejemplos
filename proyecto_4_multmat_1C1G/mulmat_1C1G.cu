@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     float *d_A, *d_B, *d_C; // device data
     size_t size_A, size_B, size_C;
     size_t nBytes_A, nBytes_B, nBytes_C;
-    size_t threads;
+    int threads = omp_get_max_threads();;
 
 // #ifdef NUM_THREADS
 //     omp_set_num_threads(NUM_THREADS);
@@ -124,8 +124,6 @@ int main(int argc, char **argv)
 
 #ifdef NUM_THREADS
     threads = NUM_THREADS;
-#else
-    threads = omp_get_max_threads();
 #endif
 
     // default values
@@ -183,7 +181,7 @@ int main(int argc, char **argv)
         h_B[i] = rand() / (float)RAND_MAX;
     }
 
-    start_time = omp_get_wtime();
+    double start_time = omp_get_wtime();
 #pragma omp parallel num_threads(threads)
     {
 
@@ -232,7 +230,7 @@ int main(int argc, char **argv)
         }
     }
 
-    end_time = omp_get_wtime();
+    double end_time = omp_get_wtime();
     processing_time = end_time - start_time;
 
 #ifdef TEST
