@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-// #define NUM_THREADS 
+// #define NUM_THREADS
 
 ////////////////////////////////////////////////////////////////////////////////
 // Program main
@@ -43,7 +43,7 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
 
     int i, j, k;
 
-#pragma omp parallel for private(i, j, k) schedule(dynamic, 1)
+#pragma omp parallel for private(i, j, k) schedule(dynamic, )
     for (i = row; i < m; i++)
     {
         for (j = 0; j < n; j++)
@@ -51,7 +51,6 @@ float *multiply_row(float *A, float *B, float *C, int m, int n, int w, int row)
             C[i * n + j] = 0.0f;
             for (k = 0; k < w; k++)
                 C[i * n + j] += A[i * w + k] * B[k * n + j];
-            
         }
     }
 
@@ -176,62 +175,65 @@ int main(int argc, char **argv)
         h_B[i] = rand() / (float)RAND_MAX;
     }
 
-    // allocate device memory
-    checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
-    checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_B));
-    checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_C));
+#pragma omp parallel
+    {
 
-    // copy data from host memory to device memory
-    checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_A, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_B, cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
+        if (omp_get_thread_num() == 0)
+        {
+            // allocate device memory
+            checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
+            checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_B));
+            checkCudaErrors(cudaMalloc((void **)&d_C, nBytes_C));
 
-    // execute the kernel
-    // printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - M: %d, N: %d, K: %d, W: %d\n",
-    //        grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y, m, n, k, w);
+            // copy data from host memory to device memory
+            checkCudaErrors(cudaMemcpy(d_A, h_A, nBytes_A, cudaMemcpyHostToDevice));
+            checkCudaErrors(cudaMemcpy(d_B, h_B, nBytes_B, cudaMemcpyHostToDevice));
+            checkCudaErrors(cudaMemset(d_C, 0, nBytes_C));
 
-    // create events
-    checkCudaErrors(cudaEventCreate(&start_event, 0));
-    checkCudaErrors(cudaEventCreate(&stop_event, 0));
+            // execute the kernel
+            // printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - M: %d, N: %d, K: %d, W: %d\n",
+            //        grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y, m, n, k, w);
 
-    // using events
-    checkCudaErrors(cudaEventRecord(start_event, 0));
+            // create events
+            checkCudaErrors(cudaEventCreate(&start_event, 0));
+            checkCudaErrors(cudaEventCreate(&stop_event, 0));
 
-    sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w, f);
+            // using events
+            checkCudaErrors(cudaEventRecord(start_event, 0));
 
-    // wait for thread completion
-    cudaThreadSynchronize();
+            sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w, f);
 
-    // printf("Processing time: %f (ms)\n", processing_time);
+            // wait for thread completion
+            cudaThreadSynchronize();
 
-    checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
+            // printf("Processing time: %f (ms)\n", processing_time);
+
+            checkCudaErrors(cudaMemcpy(h_C, d_C, nBytes_C, cudaMemcpyDeviceToHost));
 
 #ifdef DEBUG_CUDA
-    printf("DEBUG CUDA!!! ----------- \n\n");
+            printf("DEBUG CUDA!!! ----------- \n\n");
 
-    printf("A: \n");
-    print_matrix(h_A, m, w);
+            printf("A: \n");
+            print_matrix(h_A, m, w);
 
-    printf("B: \n");
-    print_matrix(h_B, w, n);
+            printf("B: \n");
+            print_matrix(h_B, w, n);
 
-    printf("CUDA: \n");
-    print_matrix(h_C, m, n);
+            printf("CUDA: \n");
+            print_matrix(h_C, m, n);
 
 #endif
-
-    multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+        }
+        else
+        {
+            multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+        }
+    }
 
     // ///*using event*/
     checkCudaErrors(cudaEventRecord(stop_event, 0));
     cudaEventSynchronize(stop_event); // block until the event is actually recorded
     checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
-
-    // #pragma omp parallel
-    // {
-    //     printf("Hello World... from thread = %d\n",
-    //            omp_get_thread_num());
-    // }
 
 #ifdef TEST
     // check result
@@ -264,5 +266,4 @@ int main(int argc, char **argv)
         fprintf(stderr, "Failed to deinitialize the device! error=%s\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
-
 }
