@@ -114,12 +114,13 @@ int main(int argc, char **argv)
     float *d_A, *d_B, *d_C; // device data
     size_t size_A, size_B, size_C;
     size_t nBytes_A, nBytes_B, nBytes_C;
+    int threads = omp_get_max_threads();
+
 
 #ifdef NUM_THREADS
-    omp_set_num_threads(NUM_THREADS);
-#else
-    omp_set_num_threads(omp_get_max_threads());
+    threads = NUM_THREADS;
 #endif
+
     // default values
 
     int m = 1;
@@ -176,7 +177,7 @@ int main(int argc, char **argv)
         h_B[i] = rand() / (float)RAND_MAX;
     }
 
-#pragma omp parallel
+#pragma omp parallel num_threads(threads)
     {
 
 #pragma omp master
