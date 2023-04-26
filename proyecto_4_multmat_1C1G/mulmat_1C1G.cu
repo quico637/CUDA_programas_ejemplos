@@ -32,7 +32,7 @@
 // #define DEBUG
 // #define DEBUG_CUDA
 
-#define NUM_THREADS 16
+#define NUM_THREADS 9
 #define SCHEDULE_RATIO 1
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -182,11 +182,11 @@ int main(int argc, char **argv)
     }
 
     double start_time = omp_get_wtime();
-// #pragma omp parallel num_threads(threads)
-//     {
+#pragma omp parallel num_threads(threads)
+    {
 
-        // if (omp_get_thread_num() == 0)
-        // {
+        if (omp_get_thread_num() == 0)
+        {
             // allocate device memory
             checkCudaErrors(cudaMalloc((void **)&d_A, nBytes_A));
             checkCudaErrors(cudaMalloc((void **)&d_B, nBytes_B));
@@ -223,14 +223,14 @@ int main(int argc, char **argv)
             print_matrix(h_C, m, n);
 
 #endif
-        // }
-        // else
-        // {
-        //     multiply_row(h_A, h_B, h_C, m, n, k, m - f);
-        // }
-    // }
+        }
+        else
+        {
+            multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+        }
+    }
 
-    multiply_row(h_A, h_B, h_C, m, n, k, m - f);
+    // multiply_row(h_A, h_B, h_C, m, n, k, m - f);
 
     double end_time = omp_get_wtime();
     processing_time = end_time - start_time;
