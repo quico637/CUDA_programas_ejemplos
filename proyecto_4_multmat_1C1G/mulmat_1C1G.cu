@@ -114,12 +114,20 @@ int main(int argc, char **argv)
     float *d_A, *d_B, *d_C; // device data
     size_t size_A, size_B, size_C;
     size_t nBytes_A, nBytes_B, nBytes_C;
+    size_t threads;
+
+// #ifdef NUM_THREADS
+//     omp_set_num_threads(NUM_THREADS);
+// #else
+//     omp_set_num_threads(omp_get_max_threads());
+// #endif
 
 #ifdef NUM_THREADS
-    omp_set_num_threads(NUM_THREADS);
+    threads = NUM_THREADS;
 #else
-    omp_set_num_threads(omp_get_max_threads());
+    threads = omp_get_max_threads();
 #endif
+
     // default values
 
     int m = 1;
@@ -133,7 +141,6 @@ int main(int argc, char **argv)
 
     // events
     float processing_time;
-    cudaEvent_t start_event, stop_event;
 
     // process command line arguments
     m = getCmdLineArgumentInt(argc, (const char **)argv, (const char *)"M") ?: m;
@@ -176,7 +183,8 @@ int main(int argc, char **argv)
         h_B[i] = rand() / (float)RAND_MAX;
     }
 
-#pragma omp parallel
+    start_time = omp_get_wtime();
+#pragma omp parallel num_threads(threads)
     {
 
         if (omp_get_thread_num() == 0)
@@ -194,13 +202,6 @@ int main(int argc, char **argv)
             // execute the kernel
             // printf("Running configuration: grid of %dx%d blocks of %dx%d threads (%d threads) - M: %d, N: %d, K: %d, W: %d\n",
             //        grid.x, grid.y, block.x, block.y, grid.x * grid.y * block.x * block.y, m, n, k, w);
-
-            // create events
-            checkCudaErrors(cudaEventCreate(&start_event, 0));
-            checkCudaErrors(cudaEventCreate(&stop_event, 0));
-
-            // using events
-            checkCudaErrors(cudaEventRecord(start_event, 0));
 
             sharedABMultiply<<<grid, block, 2 * w * w * sizeof(float)>>>(d_A, d_B, d_C, m, n, k, w, f);
 
@@ -231,10 +232,8 @@ int main(int argc, char **argv)
         }
     }
 
-    // ///*using event*/
-    checkCudaErrors(cudaEventRecord(stop_event, 0));
-    cudaEventSynchronize(stop_event); // block until the event is actually recorded
-    checkCudaErrors(cudaEventElapsedTime(&processing_time, start_event, stop_event));
+    end_time = omp_get_wtime();
+    processing_time = end_time - start_time;
 
 #ifdef TEST
     // check result
